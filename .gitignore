@@ -1,0 +1,13 @@
+.idea/
+.vscode/
+.DS_Store
+
+*.log
+*.exe
+*.test
+*.out
+
+.env
+.env.local
+
+mall_local.yml
