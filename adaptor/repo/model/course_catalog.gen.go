@@ -16,8 +16,8 @@ type CourseCatalog struct {
 	ParentID int64     `gorm:"column:parent_id;not null;default:-1" json:"parent_id"`
 	Level    int32     `gorm:"column:level;not null;default:1" json:"level"`
 	Name     string    `gorm:"column:name;not null" json:"name"`
-	GoodsID  int64     `gorm:"column:goods_id;not null" json:"goods_id"`
-	Sort     int64     `gorm:"column:sort;not null" json:"sort"`
+	CourseID int64     `gorm:"column:course_id;not null" json:"course_id"`
+	Sort     int32     `gorm:"column:sort;not null" json:"sort"`
 	UpdateAt time.Time `gorm:"column:update_at;not null" json:"update_at"`
 	UpdateBy int64     `gorm:"column:update_by;not null" json:"update_by"`
 }

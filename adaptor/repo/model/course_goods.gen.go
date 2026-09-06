@@ -12,23 +12,27 @@ const TableNameCourseGood = "course_goods"
 
 // CourseGood 课程商品表
 type CourseGood struct {
-	ID         int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Name       string `gorm:"column:name;not null" json:"name"`
-	CoverKey   string `gorm:"column:cover_key;not null;comment:封面图key" json:"cover_key"` // 封面图key
-	IntroKey   string `gorm:"column:intro_key;not null;comment:详情图key" json:"intro_key"` // 详情图key
-	Desc       string `gorm:"column:desc;not null" json:"desc"`
-	GoodsPrice int64  `gorm:"column:goods_price;not null;comment:商品价格" json:"goods_price"` // 商品价格
+	ID             int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Name           string `gorm:"column:name;not null" json:"name"`
+	CoverKey       string `gorm:"column:cover_key;not null;comment:封面图key" json:"cover_key"`               // 封面图key
+	DetailCoverKey string `gorm:"column:detail_cover_key;not null;comment:详情图key" json:"detail_cover_key"` // 详情图key
+	Detail         string `gorm:"column:detail;not null;comment:课程详情" json:"detail"`                       // 课程详情
+	CoursePrice    int64  `gorm:"column:course_price;not null;comment:商品价格" json:"course_price"`           // 商品价格
 	/*
 		辅导服务时长
 		1：一个月 2：三个月 3：半年 4：一年
 	*/
-	ServiceTime int32     `gorm:"column:service_time;not null;comment:辅导服务时长\n1：一个月 2：三个月 3：半年 4：一年" json:"service_time"`
-	SaleType    int32     `gorm:"column:sale_type;not null;comment:1：免费 2：收费" json:"sale_type"`       // 1：免费 2：收费
-	Status      int32     `gorm:"column:status;not null;default:-1;comment:-1：下架 1：上架" json:"status"` // -1：下架 1：上架
-	CreateAt    time.Time `gorm:"column:create_at;not null" json:"create_at"`
-	CreateBy    int64     `gorm:"column:create_by;not null" json:"create_by"`
-	UpdateAt    time.Time `gorm:"column:update_at;not null" json:"update_at"`
-	UpdateBy    int64     `gorm:"column:update_by;not null" json:"update_by"`
+	ServiceTime  int32     `gorm:"column:service_time;not null;comment:辅导服务时长\n1：一个月 2：三个月 3：半年 4：一年" json:"service_time"`
+	LearnTime    int32     `gorm:"column:learn_time;not null;comment:可看时长：1：一个月 2：三个月 3：半年 4：一年" json:"learn_time"` // 可看时长：1：一个月 2：三个月 3：半年 4：一年
+	Status       int32     `gorm:"column:status;not null;default:-1;comment:-1：下架 1：上架" json:"status"`              // -1：下架 1：上架
+	Sort         int32     `gorm:"column:sort;not null" json:"sort"`
+	Features     string    `gorm:"column:features;not null;comment:课程特色" json:"features"`                   // 课程特色
+	Files        string    `gorm:"column:files;not null;comment:课程资料文件列表" json:"files"`                     // 课程资料文件列表
+	UpdateStatus int32     `gorm:"column:update_status;not null;comment:1:更新中  2：已完结" json:"update_status"` // 1:更新中  2：已完结
+	CreateAt     time.Time `gorm:"column:create_at;not null" json:"create_at"`
+	CreateBy     int64     `gorm:"column:create_by;not null" json:"create_by"`
+	UpdateAt     time.Time `gorm:"column:update_at;not null" json:"update_at"`
+	UpdateBy     int64     `gorm:"column:update_by;not null" json:"update_by"`
 }
 
 // TableName CourseGood's table name

@@ -30,12 +30,16 @@ func newCourseGood(db *gorm.DB, opts ...gen.DOOption) courseGood {
 	_courseGood.ID = field.NewInt64(tableName, "id")
 	_courseGood.Name = field.NewString(tableName, "name")
 	_courseGood.CoverKey = field.NewString(tableName, "cover_key")
-	_courseGood.IntroKey = field.NewString(tableName, "intro_key")
-	_courseGood.Desc = field.NewString(tableName, "desc")
-	_courseGood.GoodsPrice = field.NewInt64(tableName, "goods_price")
+	_courseGood.DetailCoverKey = field.NewString(tableName, "detail_cover_key")
+	_courseGood.Detail = field.NewString(tableName, "detail")
+	_courseGood.CoursePrice = field.NewInt64(tableName, "course_price")
 	_courseGood.ServiceTime = field.NewInt32(tableName, "service_time")
-	_courseGood.SaleType = field.NewInt32(tableName, "sale_type")
+	_courseGood.LearnTime = field.NewInt32(tableName, "learn_time")
 	_courseGood.Status = field.NewInt32(tableName, "status")
+	_courseGood.Sort = field.NewInt32(tableName, "sort")
+	_courseGood.Features = field.NewString(tableName, "features")
+	_courseGood.Files = field.NewString(tableName, "files")
+	_courseGood.UpdateStatus = field.NewInt32(tableName, "update_status")
 	_courseGood.CreateAt = field.NewTime(tableName, "create_at")
 	_courseGood.CreateBy = field.NewInt64(tableName, "create_by")
 	_courseGood.UpdateAt = field.NewTime(tableName, "update_at")
@@ -50,24 +54,28 @@ func newCourseGood(db *gorm.DB, opts ...gen.DOOption) courseGood {
 type courseGood struct {
 	courseGoodDo courseGoodDo
 
-	ALL        field.Asterisk
-	ID         field.Int64
-	Name       field.String
-	CoverKey   field.String // 封面图key
-	IntroKey   field.String // 详情图key
-	Desc       field.String
-	GoodsPrice field.Int64 // 商品价格
+	ALL            field.Asterisk
+	ID             field.Int64
+	Name           field.String
+	CoverKey       field.String // 封面图key
+	DetailCoverKey field.String // 详情图key
+	Detail         field.String // 课程详情
+	CoursePrice    field.Int64  // 商品价格
 	/*
 		辅导服务时长
 		1：一个月 2：三个月 3：半年 4：一年
 	*/
-	ServiceTime field.Int32
-	SaleType    field.Int32 // 1：免费 2：收费
-	Status      field.Int32 // -1：下架 1：上架
-	CreateAt    field.Time
-	CreateBy    field.Int64
-	UpdateAt    field.Time
-	UpdateBy    field.Int64
+	ServiceTime  field.Int32
+	LearnTime    field.Int32 // 可看时长：1：一个月 2：三个月 3：半年 4：一年
+	Status       field.Int32 // -1：下架 1：上架
+	Sort         field.Int32
+	Features     field.String // 课程特色
+	Files        field.String // 课程资料文件列表
+	UpdateStatus field.Int32  // 1:更新中  2：已完结
+	CreateAt     field.Time
+	CreateBy     field.Int64
+	UpdateAt     field.Time
+	UpdateBy     field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -87,12 +95,16 @@ func (c *courseGood) updateTableName(table string) *courseGood {
 	c.ID = field.NewInt64(table, "id")
 	c.Name = field.NewString(table, "name")
 	c.CoverKey = field.NewString(table, "cover_key")
-	c.IntroKey = field.NewString(table, "intro_key")
-	c.Desc = field.NewString(table, "desc")
-	c.GoodsPrice = field.NewInt64(table, "goods_price")
+	c.DetailCoverKey = field.NewString(table, "detail_cover_key")
+	c.Detail = field.NewString(table, "detail")
+	c.CoursePrice = field.NewInt64(table, "course_price")
 	c.ServiceTime = field.NewInt32(table, "service_time")
-	c.SaleType = field.NewInt32(table, "sale_type")
+	c.LearnTime = field.NewInt32(table, "learn_time")
 	c.Status = field.NewInt32(table, "status")
+	c.Sort = field.NewInt32(table, "sort")
+	c.Features = field.NewString(table, "features")
+	c.Files = field.NewString(table, "files")
+	c.UpdateStatus = field.NewInt32(table, "update_status")
 	c.CreateAt = field.NewTime(table, "create_at")
 	c.CreateBy = field.NewInt64(table, "create_by")
 	c.UpdateAt = field.NewTime(table, "update_at")
@@ -123,16 +135,20 @@ func (c *courseGood) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *courseGood) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 13)
+	c.fieldMap = make(map[string]field.Expr, 17)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["name"] = c.Name
 	c.fieldMap["cover_key"] = c.CoverKey
-	c.fieldMap["intro_key"] = c.IntroKey
-	c.fieldMap["desc"] = c.Desc
-	c.fieldMap["goods_price"] = c.GoodsPrice
+	c.fieldMap["detail_cover_key"] = c.DetailCoverKey
+	c.fieldMap["detail"] = c.Detail
+	c.fieldMap["course_price"] = c.CoursePrice
 	c.fieldMap["service_time"] = c.ServiceTime
-	c.fieldMap["sale_type"] = c.SaleType
+	c.fieldMap["learn_time"] = c.LearnTime
 	c.fieldMap["status"] = c.Status
+	c.fieldMap["sort"] = c.Sort
+	c.fieldMap["features"] = c.Features
+	c.fieldMap["files"] = c.Files
+	c.fieldMap["update_status"] = c.UpdateStatus
 	c.fieldMap["create_at"] = c.CreateAt
 	c.fieldMap["create_by"] = c.CreateBy
 	c.fieldMap["update_at"] = c.UpdateAt

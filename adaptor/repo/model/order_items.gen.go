@@ -8,13 +8,15 @@ const TableNameOrderItem = "order_items"
 
 // OrderItem 订单商品对象表
 type OrderItem struct {
-	ID        int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	OrderID   int64  `gorm:"column:order_id;not null" json:"order_id"`
-	UserID    int64  `gorm:"column:user_id;not null" json:"user_id"`
-	GoodsID   int64  `gorm:"column:goods_id;not null;comment:商品ID" json:"goods_id"`                 // 商品ID
-	GoodsType int32  `gorm:"column:goods_type;not null;default:1;comment:1:课程商品" json:"goods_type"` // 1:课程商品
-	Quantity  int32  `gorm:"column:quantity;not null;default:1;comment:商品数量" json:"quantity"`       // 商品数量
-	GoodsSnap string `gorm:"column:goods_snap;not null;comment:商品快照信息" json:"goods_snap"`           // 商品快照信息
+	ID             int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	OrderID        int64  `gorm:"column:order_id;not null" json:"order_id"`
+	UserID         int64  `gorm:"column:user_id;not null" json:"user_id"`
+	GoodsID        int64  `gorm:"column:goods_id;not null;comment:商品ID" json:"goods_id"`                 // 商品ID
+	GoodsType      int32  `gorm:"column:goods_type;not null;default:1;comment:1:课程商品" json:"goods_type"` // 1:课程商品
+	Quantity       int32  `gorm:"column:quantity;not null;default:1;comment:商品数量" json:"quantity"`       // 商品数量
+	PaymentAmount  int64  `gorm:"column:payment_amount;not null;comment:支付金额" json:"payment_amount"`     // 支付金额
+	DiscountAmount int64  `gorm:"column:discount_amount;not null;comment:优惠金额" json:"discount_amount"`   // 优惠金额
+	GoodsSnap      string `gorm:"column:goods_snap;not null;comment:商品快照信息" json:"goods_snap"`           // 商品快照信息
 }
 
 // TableName OrderItem's table name

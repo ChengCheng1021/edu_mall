@@ -6,10 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/goccy/go-yaml"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -18,16 +19,19 @@ const (
 )
 
 var (
-	etcdKey         = fmt.Sprintf("/configs/%s/system", ServerFullName)
+	etcdKey         string
+	etcdEnv         string
 	etcdAddr        string
 	localConfigPath string
 	GlobalConfig    Config
 )
 
 type Config struct {
-	Server Server `yaml:"server"`
-	Mysql  Mysql  `yaml:"mysql"`
-	Redis  Redis  `yaml:"redis"`
+	Server  Server            `yaml:"server"`
+	Mysql   Mysql             `yaml:"mysql"`
+	Redis   Redis             `yaml:"redis"`
+	BizConf BizConf           `yaml:"biz_conf"`
+	AppConf map[int32]AppConf `yaml:"app_conf"`
 }
 
 type Server struct {
@@ -50,9 +54,38 @@ type Mysql struct {
 	MaxIdle  int    `yaml:"max_idle"`
 }
 
+type Storage struct {
+	SecretID  string `yaml:"secret_id"`
+	SecretKey string `yaml:"secret_key"`
+	AppID     string `yaml:"app_id"`
+	Bucket    Bucket `yaml:"bucket"`
+}
+
+type Bucket struct {
+	Region     string            `yaml:"region"`
+	BucketName string            `yaml:"bucket_name"`
+	Domain     string            `yaml:"domain"`
+	CdnDomain  string            `yaml:"cdn_domain"`
+	SignKey    string            `yaml:"sign_key"`
+	Paths      map[string]string `yaml:"paths"`
+}
+
 func (m *Mysql) GetDsn() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=true&loc=Local",
 		m.User, m.Password, m.Host, m.Port, m.Database, m.Charset)
+}
+
+type AppConf struct {
+	AppType   string `yaml:"app_type"`
+	AppName   string `yaml:"app_name"`
+	AppID     string `yaml:"app_id"`
+	AppSecret string `yaml:"app_secret"`
+}
+
+type BizConf struct {
+	LarkGroupID  string `yaml:"lark_group_id"`
+	MobileSecret string `yaml:"mobile_secret"`
+	BizSecret    string `yaml:"biz_secret"`
 }
 
 type Redis struct {
@@ -63,9 +96,31 @@ type Redis struct {
 	MaxOpen int    `yaml:"max_open"`
 }
 
+type WechatPay struct {
+	AppID        string `yaml:"app_id"`
+	MchID        string `yaml:"mch_id"`
+	ApiKey       string `yaml:"api_key"`
+	CertSerialNo string `yaml:"cert_serial_no"`
+	CallbackUrl  string `yaml:"callback_url"` // 1>回调，2>定时查询（每10秒钟）
+	IsProd       bool   `yaml:"is_prod"`      // 是否生产环境
+}
+
+type AliSms struct {
+	Endpoint     string `yaml:"endpoint"`
+	AccessKey    string `yaml:"access_key"`
+	AccessSecret string `yaml:"access_secret"`
+}
+
+type WechatApp struct {
+	AppName   string `yaml:"app_name"`
+	AppID     string `yaml:"app_id"`
+	AppSecret string `yaml:"app_secret"`
+}
+
 func init() {
 	flag.StringVar(&localConfigPath, "c", ServerName+"_local.yml", "default config path")
-	flag.StringVar(&etcdAddr, "r", os.Getenv("ETCD_ADDR"), "default consul address")
+	flag.StringVar(&etcdAddr, "r", os.Getenv("ETCD_ADDR"), "default etcd address")
+	flag.StringVar(&etcdEnv, "k", os.Getenv("ETCD_ENV"), "etcd env")
 }
 
 func InitConfig() *Config {
@@ -74,9 +129,9 @@ func InitConfig() *Config {
 		tempConf = &Config{}
 		vipConf  = viper.New()
 	)
-
+	vipConf.SetConfigType("yaml")
 	flag.Parse()
-
+	etcdKey = fmt.Sprintf("/configs/%s/%s/system", ServerFullName, etcdEnv)
 	// etcd地址存在，优先使用etcd的配置
 	if etcdAddr != "" {
 		tempConf, err = getFromRemoteAndWatchUpdate(vipConf)
@@ -104,7 +159,11 @@ func getFromRemoteAndWatchUpdate(v *viper.Viper) (*Config, error) {
 	}
 
 	// 反序列化到结构体
-	if err := v.Unmarshal(&tempConf); err != nil {
+	err := v.Unmarshal(&tempConf, func(config *mapstructure.DecoderConfig) {
+		config.TagName = "yaml"
+	})
+
+	if err != nil {
 		return nil, err
 	}
 

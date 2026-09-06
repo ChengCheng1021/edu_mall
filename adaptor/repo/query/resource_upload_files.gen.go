@@ -31,7 +31,7 @@ func newResourceUploadFile(db *gorm.DB, opts ...gen.DOOption) resourceUploadFile
 	_resourceUploadFile.Scene = field.NewString(tableName, "scene")
 	_resourceUploadFile.FileKey = field.NewString(tableName, "file_key")
 	_resourceUploadFile.UserID = field.NewInt64(tableName, "user_id")
-	_resourceUploadFile.UserType = field.NewInt64(tableName, "user_type")
+	_resourceUploadFile.UserType = field.NewInt32(tableName, "user_type")
 	_resourceUploadFile.FileType = field.NewString(tableName, "file_type")
 	_resourceUploadFile.FileSize = field.NewInt64(tableName, "file_size")
 	_resourceUploadFile.FileName = field.NewString(tableName, "file_name")
@@ -52,7 +52,7 @@ type resourceUploadFile struct {
 	Scene          field.String // 业务场景编码
 	FileKey        field.String // 文件key,文件路径
 	UserID         field.Int64  // 用户id
-	UserType       field.Int64  // 用户类型
+	UserType       field.Int32  // 用户类型
 	FileType       field.String // 文件类型 对应文件后缀
 	FileSize       field.Int64  // 文件大小对应字节数
 	FileName       field.String // 文件名
@@ -78,7 +78,7 @@ func (r *resourceUploadFile) updateTableName(table string) *resourceUploadFile {
 	r.Scene = field.NewString(table, "scene")
 	r.FileKey = field.NewString(table, "file_key")
 	r.UserID = field.NewInt64(table, "user_id")
-	r.UserType = field.NewInt64(table, "user_type")
+	r.UserType = field.NewInt32(table, "user_type")
 	r.FileType = field.NewString(table, "file_type")
 	r.FileSize = field.NewInt64(table, "file_size")
 	r.FileName = field.NewString(table, "file_name")

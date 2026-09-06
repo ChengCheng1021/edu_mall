@@ -3,13 +3,14 @@ package admin
 import (
 	"context"
 	"encoding/json"
-	"github.com/wenlng/go-captcha/v2/slide"
-	"go.uber.org/zap"
 	"mall/common"
 	"mall/service/dto"
 	"mall/utils/logger"
 	"mall/utils/tools"
 	"time"
+
+	"github.com/wenlng/go-captcha/v2/slide"
+	"go.uber.org/zap"
 )
 
 func (s *Service) GetSlideCaptcha(ctx context.Context) (*dto.GetVerifyCaptchaResp, common.Errno) {
@@ -61,6 +62,14 @@ func (s *Service) GetSlideCaptcha(ctx context.Context) (*dto.GetVerifyCaptchaRes
 }
 
 func (s *Service) CheckSlideCaptcha(ctx context.Context, req *dto.CheckCaptchaReq) (*dto.CheckCaptchaDtoResp, common.Errno) {
+	//if s.shouldBypassSlideCaptcha() {
+	//	// 仅 DEV/测试联调使用，当前仅在 DEV 环境开启，生产环境禁止关闭。
+	//	return &dto.CheckCaptchaDtoResp{
+	//		Ticket: tools.UUIDHex(),
+	//		Expire: 280,
+	//	}, common.OK
+	//}
+
 	captData, err := s.verify.GetCaptchaKey(ctx, req.Key)
 	if err != nil {
 		logger.Error("CheckSlideCaptcha GetCaptchaKey error", zap.Error(err))
@@ -75,7 +84,7 @@ func (s *Service) CheckSlideCaptcha(ctx context.Context, req *dto.CheckCaptchaRe
 		logger.Error("CheckSlideCaptcha json.Unmarshal error", zap.Error(err))
 		return nil, common.InvalidCaptchaErr
 	}
-	ok := slide.CheckPoint(int64(req.SlideX), int64(req.SlideY), int64(dot.X), int64(dot.Y), 5)
+	ok := slide.Validate(req.SlideX, req.SlideY, dot.X, dot.Y, 5)
 	if !ok {
 		return nil, common.InvalidCaptchaErr
 	}

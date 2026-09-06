@@ -28,12 +28,11 @@ func newOrder(db *gorm.DB, opts ...gen.DOOption) order {
 	tableName := _order.orderDo.TableName()
 	_order.ALL = field.NewAsterisk(tableName)
 	_order.ID = field.NewInt64(tableName, "id")
-	_order.OrderNo = field.NewString(tableName, "order_no")
 	_order.UserID = field.NewInt64(tableName, "user_id")
 	_order.Status = field.NewInt32(tableName, "status")
 	_order.OrderSource = field.NewInt32(tableName, "order_source")
 	_order.OrderAmount = field.NewInt64(tableName, "order_amount")
-	_order.OrderOriginAmount = field.NewInt64(tableName, "order_origin_amount")
+	_order.DiscountAmount = field.NewInt64(tableName, "discount_amount")
 	_order.PaymentAmount = field.NewInt64(tableName, "payment_amount")
 	_order.TradeNo = field.NewString(tableName, "trade_no")
 	_order.InnerTradeNo = field.NewString(tableName, "inner_trade_no")
@@ -62,12 +61,11 @@ type order struct {
 
 	ALL                 field.Asterisk
 	ID                  field.Int64
-	OrderNo             field.String // 订单号
 	UserID              field.Int64  // 用户ID
 	Status              field.Int32  // -1：已取消，1: 待支付 2：已支付（待发货） 3：已退款  4：已发货 5：已签收 6：已收货
 	OrderSource         field.Int32  // 1：用户下单  2：管理后台  3：系统赠送
 	OrderAmount         field.Int64  // 订单金额=支付金额，单位分
-	OrderOriginAmount   field.Int64  // 订单金额-商品原价，单位分
+	DiscountAmount      field.Int64  // 优惠金额，单位是分
 	PaymentAmount       field.Int64  // 支付金额-实际支付金额，单位分
 	TradeNo             field.String // 支付平台订单号
 	InnerTradeNo        field.String // 内部支付订单号
@@ -101,12 +99,11 @@ func (o order) As(alias string) *order {
 func (o *order) updateTableName(table string) *order {
 	o.ALL = field.NewAsterisk(table)
 	o.ID = field.NewInt64(table, "id")
-	o.OrderNo = field.NewString(table, "order_no")
 	o.UserID = field.NewInt64(table, "user_id")
 	o.Status = field.NewInt32(table, "status")
 	o.OrderSource = field.NewInt32(table, "order_source")
 	o.OrderAmount = field.NewInt64(table, "order_amount")
-	o.OrderOriginAmount = field.NewInt64(table, "order_origin_amount")
+	o.DiscountAmount = field.NewInt64(table, "discount_amount")
 	o.PaymentAmount = field.NewInt64(table, "payment_amount")
 	o.TradeNo = field.NewString(table, "trade_no")
 	o.InnerTradeNo = field.NewString(table, "inner_trade_no")
@@ -147,14 +144,13 @@ func (o *order) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (o *order) fillFieldMap() {
-	o.fieldMap = make(map[string]field.Expr, 23)
+	o.fieldMap = make(map[string]field.Expr, 22)
 	o.fieldMap["id"] = o.ID
-	o.fieldMap["order_no"] = o.OrderNo
 	o.fieldMap["user_id"] = o.UserID
 	o.fieldMap["status"] = o.Status
 	o.fieldMap["order_source"] = o.OrderSource
 	o.fieldMap["order_amount"] = o.OrderAmount
-	o.fieldMap["order_origin_amount"] = o.OrderOriginAmount
+	o.fieldMap["discount_amount"] = o.DiscountAmount
 	o.fieldMap["payment_amount"] = o.PaymentAmount
 	o.fieldMap["trade_no"] = o.TradeNo
 	o.fieldMap["inner_trade_no"] = o.InnerTradeNo

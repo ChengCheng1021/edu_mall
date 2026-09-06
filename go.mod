@@ -5,7 +5,7 @@ go 1.23.8
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/goccy/go-yaml v1.18.0
+	github.com/go-viper/mapstructure/v2 v2.4.0
 	github.com/gogf/gf v1.16.9
 	github.com/google/uuid v1.6.0
 	github.com/panjf2000/ants/v2 v2.12.1
@@ -15,6 +15,7 @@ require (
 	github.com/wenlng/go-captcha-assets v1.0.7
 	github.com/wenlng/go-captcha/v2 v2.0.4
 	go.uber.org/zap v1.27.0
+	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.31.1
@@ -46,8 +47,8 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.27.0 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
-	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect

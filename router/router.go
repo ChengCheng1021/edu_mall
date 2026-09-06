@@ -2,7 +2,6 @@ package router
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"mall/adaptor"
 	"mall/api/admin"
 	"mall/api/customer"
@@ -10,6 +9,8 @@ import (
 	"mall/config"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type IRouter interface {
@@ -96,8 +97,34 @@ func (r *Router) adminRoute(root *gin.RouterGroup) {
 	// 登录无鉴权：添加白名单
 	adminRoot.GET("/v1/user/verify/captcha", r.admin.GetSmsCodeCaptcha)
 	adminRoot.POST("/v1/user/verify/captcha/check", r.admin.CheckSmsCodeCaptcha)
+	adminRoot.POST("/v1/user/verify/smscode", r.admin.GetSmsVerifyCode)
+	adminRoot.POST("/v1/user/mobile/password_login", r.admin.MobilePasswordLogin)
+	adminRoot.POST("/v1/user/mobile/verify_login", r.admin.MobileVerifyLogin)
+	adminRoot.POST("/v1/user/lark/qrcode_login", r.admin.LarkQrCodeLogin)
+	adminRoot.POST("/v1/user/mobile/reset_password", r.admin.MobilePasswordReset)
 
+	// 管理员用户
+	// 登出系统
+	adminRoot.POST("/v1/user/logout", r.admin.AdminUserLogout)
+	adminRoot.GET("/v1/user/list", r.admin.AdminUserList)
 	adminRoot.GET("/v1/user/info", r.admin.GetUserInfo)
 	adminRoot.POST("/v1/user/create", r.admin.CreateUser)
 	adminRoot.POST("/v1/user/update", r.admin.UpdateUser)
+	adminRoot.POST("/v1/user/delete", r.admin.DeleteUser)
+	adminRoot.POST("/v1/user/lark_bind", r.admin.LarkBind)
+	adminRoot.POST("/v1/user/lark_unbind", r.admin.LarkUnbind)
+
+	// 权限菜单
+	adminRoot.POST("/v1/perm/create", r.admin.CreatePermission)
+	adminRoot.POST("/v1/perm/update", r.admin.UpdatePermission)
+	adminRoot.POST("/v1/perm/delete", r.admin.DeletePermission)
+	adminRoot.GET("/v1/perm/list", r.admin.PermissionList)
+	adminRoot.GET("/v1/perm/my_perms", r.admin.MyPermissionList)
+	// 角色管理
+	adminRoot.POST("/v1/role/create", r.admin.AddRole)         // 添加角色
+	adminRoot.POST("/v1/role/update", r.admin.UpdateRole)      // 更新角色
+	adminRoot.GET("/v1/role/list", r.admin.ListRole)           // 角色列表
+	adminRoot.GET("/v1/role/my_roles", r.admin.MyRoles)        // 获取自己的角色
+	adminRoot.POST("/v1/role/perm/sets", r.admin.SetRolePerms) // 设置角色权限
+
 }

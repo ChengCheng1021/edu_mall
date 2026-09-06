@@ -12,20 +12,16 @@ const TableNameCourseLesson = "course_lessons"
 
 // CourseLesson 课程课时表
 type CourseLesson struct {
-	ID          int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	GoodsID     int64     `gorm:"column:goods_id;not null" json:"goods_id"`
-	CatalogID   int64     `gorm:"column:catalog_id;not null" json:"catalog_id"`
-	Name        string    `gorm:"column:name;not null;comment:课时名称" json:"name"`                          // 课时名称
-	EnableTrial int32     `gorm:"column:enable_trial;not null;comment:1:试听 其他值表示非试听" json:"enable_trial"` // 1:试听 其他值表示非试听
-	Status      int32     `gorm:"column:status;not null;comment:1:启用 -1：禁用" json:"status"`                // 1:启用 -1：禁用
-	VideoKey    string    `gorm:"column:video_key;not null;comment:文件key" json:"video_key"`               // 文件key
-	Detail      string    `gorm:"column:detail;not null;comment:课时详情" json:"detail"`                      // 课时详情
-	Homework    string    `gorm:"column:homework;not null;comment:课后练习" json:"homework"`                  // 课后练习
-	Sort        int32     `gorm:"column:sort;not null" json:"sort"`
-	ShowTime    time.Time `gorm:"column:show_time;not null;comment:课时可见时间" json:"show_time"`                                                           // 课时可见时间
-	Attachments string    `gorm:"column:attachments;not null;comment:课时课件文件列表[{"file_key": "", "file_name": "", "file_type": ""}]" json:"attachments"` // 课时课件文件列表[{"file_key": "", "file_name": "", "file_type": ""}]
-	UpdateAt    time.Time `gorm:"column:update_at;not null" json:"update_at"`
-	UpdateBy    int64     `gorm:"column:update_by;not null" json:"update_by"`
+	ID            int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	CourseGoodsID int64     `gorm:"column:course_goods_id;not null" json:"course_goods_id"`
+	CatalogID     int64     `gorm:"column:catalog_id;not null" json:"catalog_id"`
+	Name          string    `gorm:"column:name;not null;comment:录播课时名-可以跟录播管理中的名字不一样" json:"name"`          // 录播课时名-可以跟录播管理中的名字不一样
+	LessonID      int64     `gorm:"column:lesson_id;not null;comment:录播课时ID" json:"lesson_id"`              // 录播课时ID
+	EnableTrial   int32     `gorm:"column:enable_trial;not null;comment:1:试听 其他值表示非试听" json:"enable_trial"` // 1:试听 其他值表示非试听
+	Sort          int32     `gorm:"column:sort;not null" json:"sort"`
+	ShowTime      time.Time `gorm:"column:show_time;not null;comment:课时可见时间" json:"show_time"` // 课时可见时间
+	UpdateAt      time.Time `gorm:"column:update_at;not null" json:"update_at"`
+	UpdateBy      int64     `gorm:"column:update_by;not null" json:"update_by"`
 }
 
 // TableName CourseLesson's table name

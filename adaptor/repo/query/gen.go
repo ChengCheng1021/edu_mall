@@ -17,71 +17,92 @@ import (
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:                 db,
-		AdminUser:          newAdminUser(db, opts...),
-		AdminUserRole:      newAdminUserRole(db, opts...),
-		AppUser:            newAppUser(db, opts...),
-		CourseCatalog:      newCourseCatalog(db, opts...),
-		CourseGood:         newCourseGood(db, opts...),
-		CourseLesson:       newCourseLesson(db, opts...),
-		MobileUser:         newMobileUser(db, opts...),
-		Order:              newOrder(db, opts...),
-		OrderItem:          newOrderItem(db, opts...),
-		Permission:         newPermission(db, opts...),
-		ResourceUploadFile: newResourceUploadFile(db, opts...),
-		Role:               newRole(db, opts...),
-		RolePermission:     newRolePermission(db, opts...),
-		SmsTemplate:        newSmsTemplate(db, opts...),
-		User:               newUser(db, opts...),
-		UserCourseGood:     newUserCourseGood(db, opts...),
-		WechatUser:         newWechatUser(db, opts...),
+		db:                  db,
+		AdminUser:           newAdminUser(db, opts...),
+		AdminUserRole:       newAdminUserRole(db, opts...),
+		AppUser:             newAppUser(db, opts...),
+		CourseCatalog:       newCourseCatalog(db, opts...),
+		CourseGood:          newCourseGood(db, opts...),
+		CourseLesson:        newCourseLesson(db, opts...),
+		Lesson:              newLesson(db, opts...),
+		LessonCategory:      newLessonCategory(db, opts...),
+		LessonLearnProgress: newLessonLearnProgress(db, opts...),
+		LessonLearnRecord:   newLessonLearnRecord(db, opts...),
+		MobileUser:          newMobileUser(db, opts...),
+		Order:               newOrder(db, opts...),
+		OrderItem:           newOrderItem(db, opts...),
+		OrderRefund:         newOrderRefund(db, opts...),
+		PaymentPrivateKey:   newPaymentPrivateKey(db, opts...),
+		Permission:          newPermission(db, opts...),
+		ResourceUploadFile:  newResourceUploadFile(db, opts...),
+		Role:                newRole(db, opts...),
+		RolePermission:      newRolePermission(db, opts...),
+		SmsTemplate:         newSmsTemplate(db, opts...),
+		User:                newUser(db, opts...),
+		UserCart:            newUserCart(db, opts...),
+		UserCourseGood:      newUserCourseGood(db, opts...),
+		WechatUser:          newWechatUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	AdminUser          adminUser
-	AdminUserRole      adminUserRole
-	AppUser            appUser
-	CourseCatalog      courseCatalog
-	CourseGood         courseGood
-	CourseLesson       courseLesson
-	MobileUser         mobileUser
-	Order              order
-	OrderItem          orderItem
-	Permission         permission
-	ResourceUploadFile resourceUploadFile
-	Role               role
-	RolePermission     rolePermission
-	SmsTemplate        smsTemplate
-	User               user
-	UserCourseGood     userCourseGood
-	WechatUser         wechatUser
+	AdminUser           adminUser
+	AdminUserRole       adminUserRole
+	AppUser             appUser
+	CourseCatalog       courseCatalog
+	CourseGood          courseGood
+	CourseLesson        courseLesson
+	Lesson              lesson
+	LessonCategory      lessonCategory
+	LessonLearnProgress lessonLearnProgress
+	LessonLearnRecord   lessonLearnRecord
+	MobileUser          mobileUser
+	Order               order
+	OrderItem           orderItem
+	OrderRefund         orderRefund
+	PaymentPrivateKey   paymentPrivateKey
+	Permission          permission
+	ResourceUploadFile  resourceUploadFile
+	Role                role
+	RolePermission      rolePermission
+	SmsTemplate         smsTemplate
+	User                user
+	UserCart            userCart
+	UserCourseGood      userCourseGood
+	WechatUser          wechatUser
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:                 db,
-		AdminUser:          q.AdminUser.clone(db),
-		AdminUserRole:      q.AdminUserRole.clone(db),
-		AppUser:            q.AppUser.clone(db),
-		CourseCatalog:      q.CourseCatalog.clone(db),
-		CourseGood:         q.CourseGood.clone(db),
-		CourseLesson:       q.CourseLesson.clone(db),
-		MobileUser:         q.MobileUser.clone(db),
-		Order:              q.Order.clone(db),
-		OrderItem:          q.OrderItem.clone(db),
-		Permission:         q.Permission.clone(db),
-		ResourceUploadFile: q.ResourceUploadFile.clone(db),
-		Role:               q.Role.clone(db),
-		RolePermission:     q.RolePermission.clone(db),
-		SmsTemplate:        q.SmsTemplate.clone(db),
-		User:               q.User.clone(db),
-		UserCourseGood:     q.UserCourseGood.clone(db),
-		WechatUser:         q.WechatUser.clone(db),
+		db:                  db,
+		AdminUser:           q.AdminUser.clone(db),
+		AdminUserRole:       q.AdminUserRole.clone(db),
+		AppUser:             q.AppUser.clone(db),
+		CourseCatalog:       q.CourseCatalog.clone(db),
+		CourseGood:          q.CourseGood.clone(db),
+		CourseLesson:        q.CourseLesson.clone(db),
+		Lesson:              q.Lesson.clone(db),
+		LessonCategory:      q.LessonCategory.clone(db),
+		LessonLearnProgress: q.LessonLearnProgress.clone(db),
+		LessonLearnRecord:   q.LessonLearnRecord.clone(db),
+		MobileUser:          q.MobileUser.clone(db),
+		Order:               q.Order.clone(db),
+		OrderItem:           q.OrderItem.clone(db),
+		OrderRefund:         q.OrderRefund.clone(db),
+		PaymentPrivateKey:   q.PaymentPrivateKey.clone(db),
+		Permission:          q.Permission.clone(db),
+		ResourceUploadFile:  q.ResourceUploadFile.clone(db),
+		Role:                q.Role.clone(db),
+		RolePermission:      q.RolePermission.clone(db),
+		SmsTemplate:         q.SmsTemplate.clone(db),
+		User:                q.User.clone(db),
+		UserCart:            q.UserCart.clone(db),
+		UserCourseGood:      q.UserCourseGood.clone(db),
+		WechatUser:          q.WechatUser.clone(db),
 	}
 }
 
@@ -95,66 +116,87 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:                 db,
-		AdminUser:          q.AdminUser.replaceDB(db),
-		AdminUserRole:      q.AdminUserRole.replaceDB(db),
-		AppUser:            q.AppUser.replaceDB(db),
-		CourseCatalog:      q.CourseCatalog.replaceDB(db),
-		CourseGood:         q.CourseGood.replaceDB(db),
-		CourseLesson:       q.CourseLesson.replaceDB(db),
-		MobileUser:         q.MobileUser.replaceDB(db),
-		Order:              q.Order.replaceDB(db),
-		OrderItem:          q.OrderItem.replaceDB(db),
-		Permission:         q.Permission.replaceDB(db),
-		ResourceUploadFile: q.ResourceUploadFile.replaceDB(db),
-		Role:               q.Role.replaceDB(db),
-		RolePermission:     q.RolePermission.replaceDB(db),
-		SmsTemplate:        q.SmsTemplate.replaceDB(db),
-		User:               q.User.replaceDB(db),
-		UserCourseGood:     q.UserCourseGood.replaceDB(db),
-		WechatUser:         q.WechatUser.replaceDB(db),
+		db:                  db,
+		AdminUser:           q.AdminUser.replaceDB(db),
+		AdminUserRole:       q.AdminUserRole.replaceDB(db),
+		AppUser:             q.AppUser.replaceDB(db),
+		CourseCatalog:       q.CourseCatalog.replaceDB(db),
+		CourseGood:          q.CourseGood.replaceDB(db),
+		CourseLesson:        q.CourseLesson.replaceDB(db),
+		Lesson:              q.Lesson.replaceDB(db),
+		LessonCategory:      q.LessonCategory.replaceDB(db),
+		LessonLearnProgress: q.LessonLearnProgress.replaceDB(db),
+		LessonLearnRecord:   q.LessonLearnRecord.replaceDB(db),
+		MobileUser:          q.MobileUser.replaceDB(db),
+		Order:               q.Order.replaceDB(db),
+		OrderItem:           q.OrderItem.replaceDB(db),
+		OrderRefund:         q.OrderRefund.replaceDB(db),
+		PaymentPrivateKey:   q.PaymentPrivateKey.replaceDB(db),
+		Permission:          q.Permission.replaceDB(db),
+		ResourceUploadFile:  q.ResourceUploadFile.replaceDB(db),
+		Role:                q.Role.replaceDB(db),
+		RolePermission:      q.RolePermission.replaceDB(db),
+		SmsTemplate:         q.SmsTemplate.replaceDB(db),
+		User:                q.User.replaceDB(db),
+		UserCart:            q.UserCart.replaceDB(db),
+		UserCourseGood:      q.UserCourseGood.replaceDB(db),
+		WechatUser:          q.WechatUser.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	AdminUser          *adminUserDo
-	AdminUserRole      *adminUserRoleDo
-	AppUser            *appUserDo
-	CourseCatalog      *courseCatalogDo
-	CourseGood         *courseGoodDo
-	CourseLesson       *courseLessonDo
-	MobileUser         *mobileUserDo
-	Order              *orderDo
-	OrderItem          *orderItemDo
-	Permission         *permissionDo
-	ResourceUploadFile *resourceUploadFileDo
-	Role               *roleDo
-	RolePermission     *rolePermissionDo
-	SmsTemplate        *smsTemplateDo
-	User               *userDo
-	UserCourseGood     *userCourseGoodDo
-	WechatUser         *wechatUserDo
+	AdminUser           *adminUserDo
+	AdminUserRole       *adminUserRoleDo
+	AppUser             *appUserDo
+	CourseCatalog       *courseCatalogDo
+	CourseGood          *courseGoodDo
+	CourseLesson        *courseLessonDo
+	Lesson              *lessonDo
+	LessonCategory      *lessonCategoryDo
+	LessonLearnProgress *lessonLearnProgressDo
+	LessonLearnRecord   *lessonLearnRecordDo
+	MobileUser          *mobileUserDo
+	Order               *orderDo
+	OrderItem           *orderItemDo
+	OrderRefund         *orderRefundDo
+	PaymentPrivateKey   *paymentPrivateKeyDo
+	Permission          *permissionDo
+	ResourceUploadFile  *resourceUploadFileDo
+	Role                *roleDo
+	RolePermission      *rolePermissionDo
+	SmsTemplate         *smsTemplateDo
+	User                *userDo
+	UserCart            *userCartDo
+	UserCourseGood      *userCourseGoodDo
+	WechatUser          *wechatUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		AdminUser:          q.AdminUser.WithContext(ctx),
-		AdminUserRole:      q.AdminUserRole.WithContext(ctx),
-		AppUser:            q.AppUser.WithContext(ctx),
-		CourseCatalog:      q.CourseCatalog.WithContext(ctx),
-		CourseGood:         q.CourseGood.WithContext(ctx),
-		CourseLesson:       q.CourseLesson.WithContext(ctx),
-		MobileUser:         q.MobileUser.WithContext(ctx),
-		Order:              q.Order.WithContext(ctx),
-		OrderItem:          q.OrderItem.WithContext(ctx),
-		Permission:         q.Permission.WithContext(ctx),
-		ResourceUploadFile: q.ResourceUploadFile.WithContext(ctx),
-		Role:               q.Role.WithContext(ctx),
-		RolePermission:     q.RolePermission.WithContext(ctx),
-		SmsTemplate:        q.SmsTemplate.WithContext(ctx),
-		User:               q.User.WithContext(ctx),
-		UserCourseGood:     q.UserCourseGood.WithContext(ctx),
-		WechatUser:         q.WechatUser.WithContext(ctx),
+		AdminUser:           q.AdminUser.WithContext(ctx),
+		AdminUserRole:       q.AdminUserRole.WithContext(ctx),
+		AppUser:             q.AppUser.WithContext(ctx),
+		CourseCatalog:       q.CourseCatalog.WithContext(ctx),
+		CourseGood:          q.CourseGood.WithContext(ctx),
+		CourseLesson:        q.CourseLesson.WithContext(ctx),
+		Lesson:              q.Lesson.WithContext(ctx),
+		LessonCategory:      q.LessonCategory.WithContext(ctx),
+		LessonLearnProgress: q.LessonLearnProgress.WithContext(ctx),
+		LessonLearnRecord:   q.LessonLearnRecord.WithContext(ctx),
+		MobileUser:          q.MobileUser.WithContext(ctx),
+		Order:               q.Order.WithContext(ctx),
+		OrderItem:           q.OrderItem.WithContext(ctx),
+		OrderRefund:         q.OrderRefund.WithContext(ctx),
+		PaymentPrivateKey:   q.PaymentPrivateKey.WithContext(ctx),
+		Permission:          q.Permission.WithContext(ctx),
+		ResourceUploadFile:  q.ResourceUploadFile.WithContext(ctx),
+		Role:                q.Role.WithContext(ctx),
+		RolePermission:      q.RolePermission.WithContext(ctx),
+		SmsTemplate:         q.SmsTemplate.WithContext(ctx),
+		User:                q.User.WithContext(ctx),
+		UserCart:            q.UserCart.WithContext(ctx),
+		UserCourseGood:      q.UserCourseGood.WithContext(ctx),
+		WechatUser:          q.WechatUser.WithContext(ctx),
 	}
 }
 

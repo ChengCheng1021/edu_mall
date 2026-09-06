@@ -31,8 +31,8 @@ func newCourseCatalog(db *gorm.DB, opts ...gen.DOOption) courseCatalog {
 	_courseCatalog.ParentID = field.NewInt64(tableName, "parent_id")
 	_courseCatalog.Level = field.NewInt32(tableName, "level")
 	_courseCatalog.Name = field.NewString(tableName, "name")
-	_courseCatalog.GoodsID = field.NewInt64(tableName, "goods_id")
-	_courseCatalog.Sort = field.NewInt64(tableName, "sort")
+	_courseCatalog.CourseID = field.NewInt64(tableName, "course_id")
+	_courseCatalog.Sort = field.NewInt32(tableName, "sort")
 	_courseCatalog.UpdateAt = field.NewTime(tableName, "update_at")
 	_courseCatalog.UpdateBy = field.NewInt64(tableName, "update_by")
 
@@ -50,8 +50,8 @@ type courseCatalog struct {
 	ParentID field.Int64
 	Level    field.Int32
 	Name     field.String
-	GoodsID  field.Int64
-	Sort     field.Int64
+	CourseID field.Int64
+	Sort     field.Int32
 	UpdateAt field.Time
 	UpdateBy field.Int64
 
@@ -74,8 +74,8 @@ func (c *courseCatalog) updateTableName(table string) *courseCatalog {
 	c.ParentID = field.NewInt64(table, "parent_id")
 	c.Level = field.NewInt32(table, "level")
 	c.Name = field.NewString(table, "name")
-	c.GoodsID = field.NewInt64(table, "goods_id")
-	c.Sort = field.NewInt64(table, "sort")
+	c.CourseID = field.NewInt64(table, "course_id")
+	c.Sort = field.NewInt32(table, "sort")
 	c.UpdateAt = field.NewTime(table, "update_at")
 	c.UpdateBy = field.NewInt64(table, "update_by")
 
@@ -111,7 +111,7 @@ func (c *courseCatalog) fillFieldMap() {
 	c.fieldMap["parent_id"] = c.ParentID
 	c.fieldMap["level"] = c.Level
 	c.fieldMap["name"] = c.Name
-	c.fieldMap["goods_id"] = c.GoodsID
+	c.fieldMap["course_id"] = c.CourseID
 	c.fieldMap["sort"] = c.Sort
 	c.fieldMap["update_at"] = c.UpdateAt
 	c.fieldMap["update_by"] = c.UpdateBy

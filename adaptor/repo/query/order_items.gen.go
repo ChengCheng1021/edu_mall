@@ -33,6 +33,8 @@ func newOrderItem(db *gorm.DB, opts ...gen.DOOption) orderItem {
 	_orderItem.GoodsID = field.NewInt64(tableName, "goods_id")
 	_orderItem.GoodsType = field.NewInt32(tableName, "goods_type")
 	_orderItem.Quantity = field.NewInt32(tableName, "quantity")
+	_orderItem.PaymentAmount = field.NewInt64(tableName, "payment_amount")
+	_orderItem.DiscountAmount = field.NewInt64(tableName, "discount_amount")
 	_orderItem.GoodsSnap = field.NewString(tableName, "goods_snap")
 
 	_orderItem.fillFieldMap()
@@ -44,14 +46,16 @@ func newOrderItem(db *gorm.DB, opts ...gen.DOOption) orderItem {
 type orderItem struct {
 	orderItemDo orderItemDo
 
-	ALL       field.Asterisk
-	ID        field.Int64
-	OrderID   field.Int64
-	UserID    field.Int64
-	GoodsID   field.Int64  // 商品ID
-	GoodsType field.Int32  // 1:课程商品
-	Quantity  field.Int32  // 商品数量
-	GoodsSnap field.String // 商品快照信息
+	ALL            field.Asterisk
+	ID             field.Int64
+	OrderID        field.Int64
+	UserID         field.Int64
+	GoodsID        field.Int64  // 商品ID
+	GoodsType      field.Int32  // 1:课程商品
+	Quantity       field.Int32  // 商品数量
+	PaymentAmount  field.Int64  // 支付金额
+	DiscountAmount field.Int64  // 优惠金额
+	GoodsSnap      field.String // 商品快照信息
 
 	fieldMap map[string]field.Expr
 }
@@ -74,6 +78,8 @@ func (o *orderItem) updateTableName(table string) *orderItem {
 	o.GoodsID = field.NewInt64(table, "goods_id")
 	o.GoodsType = field.NewInt32(table, "goods_type")
 	o.Quantity = field.NewInt32(table, "quantity")
+	o.PaymentAmount = field.NewInt64(table, "payment_amount")
+	o.DiscountAmount = field.NewInt64(table, "discount_amount")
 	o.GoodsSnap = field.NewString(table, "goods_snap")
 
 	o.fillFieldMap()
@@ -101,13 +107,15 @@ func (o *orderItem) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (o *orderItem) fillFieldMap() {
-	o.fieldMap = make(map[string]field.Expr, 7)
+	o.fieldMap = make(map[string]field.Expr, 9)
 	o.fieldMap["id"] = o.ID
 	o.fieldMap["order_id"] = o.OrderID
 	o.fieldMap["user_id"] = o.UserID
 	o.fieldMap["goods_id"] = o.GoodsID
 	o.fieldMap["goods_type"] = o.GoodsType
 	o.fieldMap["quantity"] = o.Quantity
+	o.fieldMap["payment_amount"] = o.PaymentAmount
+	o.fieldMap["discount_amount"] = o.DiscountAmount
 	o.fieldMap["goods_snap"] = o.GoodsSnap
 }
 

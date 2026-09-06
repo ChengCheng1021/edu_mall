@@ -30,9 +30,11 @@ func newUserCourseGood(db *gorm.DB, opts ...gen.DOOption) userCourseGood {
 	_userCourseGood.ID = field.NewInt64(tableName, "id")
 	_userCourseGood.UserID = field.NewInt64(tableName, "user_id")
 	_userCourseGood.OrderID = field.NewInt64(tableName, "order_id")
+	_userCourseGood.OrderItemID = field.NewInt64(tableName, "order_item_id")
 	_userCourseGood.GoodsID = field.NewInt64(tableName, "goods_id")
 	_userCourseGood.GoodsType = field.NewInt32(tableName, "goods_type")
 	_userCourseGood.BuyTime = field.NewInt64(tableName, "buy_time")
+	_userCourseGood.LearnExpireTime = field.NewInt64(tableName, "learn_expire_time")
 	_userCourseGood.ServiceExpireTime = field.NewInt64(tableName, "service_expire_time")
 
 	_userCourseGood.fillFieldMap()
@@ -48,10 +50,12 @@ type userCourseGood struct {
 	ID                field.Int64
 	UserID            field.Int64 // 用户ID
 	OrderID           field.Int64 // 订单ID
+	OrderItemID       field.Int64 // 子订单对象ID
 	GoodsID           field.Int64 // 商品ID
 	GoodsType         field.Int32 // 1.课程商品
 	BuyTime           field.Int64 // 购买时间
-	ServiceExpireTime field.Int64 // fudao 到期时间
+	LearnExpireTime   field.Int64 // 课程可学习到期时间
+	ServiceExpireTime field.Int64 // 服务到期时间
 
 	fieldMap map[string]field.Expr
 }
@@ -71,9 +75,11 @@ func (u *userCourseGood) updateTableName(table string) *userCourseGood {
 	u.ID = field.NewInt64(table, "id")
 	u.UserID = field.NewInt64(table, "user_id")
 	u.OrderID = field.NewInt64(table, "order_id")
+	u.OrderItemID = field.NewInt64(table, "order_item_id")
 	u.GoodsID = field.NewInt64(table, "goods_id")
 	u.GoodsType = field.NewInt32(table, "goods_type")
 	u.BuyTime = field.NewInt64(table, "buy_time")
+	u.LearnExpireTime = field.NewInt64(table, "learn_expire_time")
 	u.ServiceExpireTime = field.NewInt64(table, "service_expire_time")
 
 	u.fillFieldMap()
@@ -103,13 +109,15 @@ func (u *userCourseGood) GetFieldByName(fieldName string) (field.OrderExpr, bool
 }
 
 func (u *userCourseGood) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 7)
+	u.fieldMap = make(map[string]field.Expr, 9)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["user_id"] = u.UserID
 	u.fieldMap["order_id"] = u.OrderID
+	u.fieldMap["order_item_id"] = u.OrderItemID
 	u.fieldMap["goods_id"] = u.GoodsID
 	u.fieldMap["goods_type"] = u.GoodsType
 	u.fieldMap["buy_time"] = u.BuyTime
+	u.fieldMap["learn_expire_time"] = u.LearnExpireTime
 	u.fieldMap["service_expire_time"] = u.ServiceExpireTime
 }
 

@@ -8,13 +8,12 @@ const TableNameOrder = "orders"
 
 // Order 订单表
 type Order struct {
-	ID                  int64   `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	OrderNo             string  `gorm:"column:order_no;not null;comment:订单号" json:"order_no"`                                                     // 订单号
+	ID                  int64   `gorm:"column:id;primaryKey" json:"id"`
 	UserID              int64   `gorm:"column:user_id;not null;comment:用户ID" json:"user_id"`                                                      // 用户ID
 	Status              int32   `gorm:"column:status;not null;default:1;comment:-1：已取消，1: 待支付 2：已支付（待发货） 3：已退款  4：已发货 5：已签收 6：已收货" json:"status"` // -1：已取消，1: 待支付 2：已支付（待发货） 3：已退款  4：已发货 5：已签收 6：已收货
 	OrderSource         int32   `gorm:"column:order_source;not null;comment:1：用户下单  2：管理后台  3：系统赠送" json:"order_source"`                          // 1：用户下单  2：管理后台  3：系统赠送
 	OrderAmount         int64   `gorm:"column:order_amount;not null;comment:订单金额=支付金额，单位分" json:"order_amount"`                                   // 订单金额=支付金额，单位分
-	OrderOriginAmount   int64   `gorm:"column:order_origin_amount;not null;comment:订单金额-商品原价，单位分" json:"order_origin_amount"`                     // 订单金额-商品原价，单位分
+	DiscountAmount      int64   `gorm:"column:discount_amount;not null;comment:优惠金额，单位是分" json:"discount_amount"`                                 // 优惠金额，单位是分
 	PaymentAmount       int64   `gorm:"column:payment_amount;not null;comment:支付金额-实际支付金额，单位分" json:"payment_amount"`                             // 支付金额-实际支付金额，单位分
 	TradeNo             string  `gorm:"column:trade_no;not null;comment:支付平台订单号" json:"trade_no"`                                                 // 支付平台订单号
 	InnerTradeNo        string  `gorm:"column:inner_trade_no;not null;comment:内部支付订单号" json:"inner_trade_no"`                                     // 内部支付订单号

@@ -16,7 +16,7 @@ type ResourceUploadFile struct {
 	Scene          string    `gorm:"column:scene;not null;comment:业务场景编码" json:"scene"`                                        // 业务场景编码
 	FileKey        string    `gorm:"column:file_key;not null;comment:文件key,文件路径" json:"file_key"`                              // 文件key,文件路径
 	UserID         int64     `gorm:"column:user_id;not null;comment:用户id" json:"user_id"`                                      // 用户id
-	UserType       int64     `gorm:"column:user_type;not null;comment:用户类型" json:"user_type"`                                  // 用户类型
+	UserType       int32     `gorm:"column:user_type;not null;comment:用户类型" json:"user_type"`                                  // 用户类型
 	FileType       string    `gorm:"column:file_type;not null;comment:文件类型 对应文件后缀" json:"file_type"`                           // 文件类型 对应文件后缀
 	FileSize       int64     `gorm:"column:file_size;not null;comment:文件大小对应字节数" json:"file_size"`                             // 文件大小对应字节数
 	FileName       string    `gorm:"column:file_name;not null;comment:文件名" json:"file_name"`                                   // 文件名

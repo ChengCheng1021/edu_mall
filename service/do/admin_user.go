@@ -1,28 +1,35 @@
 package do
 
-type CreateUser struct {
-	AdminUserID int64  `json:"admin_user_id"`
-	Name        string `json:"name"`
-	NickName    string `json:"nick_name"`
-	Mobile      string `json:"mobile"`
-	Sex         int32  `json:"sex"`
+import "mall/common"
+
+type CreateAdminUser struct {
+	AdminUserID int64
+	Name        string
+	NickName    string
+	Mobile      string
+	Sex         int32
+	RoleIds     []int64
 }
 
-type UpdateUser struct {
-	AdminUserID int64  `json:"admin_user_id"`
-	ID          int64  `json:"id"`
-	Name        string `json:"name"`
-	NickName    string `json:"nick_name"`
-	Sex         int32  `json:"sex"`
+type UpdateAdminUser struct {
+	AdminUserID int64
+	ID          int64
+	Name        string
+	NickName    string
+	Sex         int32
+	RoleIds     []int64
+	Status      int32
 }
 
-type UpdateUserStatus struct {
-	AdminUserID int64 `json:"admin_user_id"`
-	ID          int64 `json:"id"`
-	Status      int32 `json:"status"`
-}
-
-type UpdateUserPassword struct {
+type UpdateAdminUserPassword struct {
 	ID       int64  `json:"id"`
 	Password string `json:"password"`
+}
+
+type ListAdminUser struct {
+	common.Pager
+	Name   string
+	Mobile string // 手机号过滤
+	RoleID int64
+	Status int32 // 状态过滤
 }

@@ -28,17 +28,13 @@ func newCourseLesson(db *gorm.DB, opts ...gen.DOOption) courseLesson {
 	tableName := _courseLesson.courseLessonDo.TableName()
 	_courseLesson.ALL = field.NewAsterisk(tableName)
 	_courseLesson.ID = field.NewInt64(tableName, "id")
-	_courseLesson.GoodsID = field.NewInt64(tableName, "goods_id")
+	_courseLesson.CourseGoodsID = field.NewInt64(tableName, "course_goods_id")
 	_courseLesson.CatalogID = field.NewInt64(tableName, "catalog_id")
 	_courseLesson.Name = field.NewString(tableName, "name")
+	_courseLesson.LessonID = field.NewInt64(tableName, "lesson_id")
 	_courseLesson.EnableTrial = field.NewInt32(tableName, "enable_trial")
-	_courseLesson.Status = field.NewInt32(tableName, "status")
-	_courseLesson.VideoKey = field.NewString(tableName, "video_key")
-	_courseLesson.Detail = field.NewString(tableName, "detail")
-	_courseLesson.Homework = field.NewString(tableName, "homework")
 	_courseLesson.Sort = field.NewInt32(tableName, "sort")
 	_courseLesson.ShowTime = field.NewTime(tableName, "show_time")
-	_courseLesson.Attachments = field.NewString(tableName, "attachments")
 	_courseLesson.UpdateAt = field.NewTime(tableName, "update_at")
 	_courseLesson.UpdateBy = field.NewInt64(tableName, "update_by")
 
@@ -51,21 +47,17 @@ func newCourseLesson(db *gorm.DB, opts ...gen.DOOption) courseLesson {
 type courseLesson struct {
 	courseLessonDo courseLessonDo
 
-	ALL         field.Asterisk
-	ID          field.Int64
-	GoodsID     field.Int64
-	CatalogID   field.Int64
-	Name        field.String // 课时名称
-	EnableTrial field.Int32  // 1:试听 其他值表示非试听
-	Status      field.Int32  // 1:启用 -1：禁用
-	VideoKey    field.String // 文件key
-	Detail      field.String // 课时详情
-	Homework    field.String // 课后练习
-	Sort        field.Int32
-	ShowTime    field.Time   // 课时可见时间
-	Attachments field.String // 课时课件文件列表[{"file_key": "", "file_name": "", "file_type": ""}]
-	UpdateAt    field.Time
-	UpdateBy    field.Int64
+	ALL           field.Asterisk
+	ID            field.Int64
+	CourseGoodsID field.Int64
+	CatalogID     field.Int64
+	Name          field.String // 录播课时名-可以跟录播管理中的名字不一样
+	LessonID      field.Int64  // 录播课时ID
+	EnableTrial   field.Int32  // 1:试听 其他值表示非试听
+	Sort          field.Int32
+	ShowTime      field.Time // 课时可见时间
+	UpdateAt      field.Time
+	UpdateBy      field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -83,17 +75,13 @@ func (c courseLesson) As(alias string) *courseLesson {
 func (c *courseLesson) updateTableName(table string) *courseLesson {
 	c.ALL = field.NewAsterisk(table)
 	c.ID = field.NewInt64(table, "id")
-	c.GoodsID = field.NewInt64(table, "goods_id")
+	c.CourseGoodsID = field.NewInt64(table, "course_goods_id")
 	c.CatalogID = field.NewInt64(table, "catalog_id")
 	c.Name = field.NewString(table, "name")
+	c.LessonID = field.NewInt64(table, "lesson_id")
 	c.EnableTrial = field.NewInt32(table, "enable_trial")
-	c.Status = field.NewInt32(table, "status")
-	c.VideoKey = field.NewString(table, "video_key")
-	c.Detail = field.NewString(table, "detail")
-	c.Homework = field.NewString(table, "homework")
 	c.Sort = field.NewInt32(table, "sort")
 	c.ShowTime = field.NewTime(table, "show_time")
-	c.Attachments = field.NewString(table, "attachments")
 	c.UpdateAt = field.NewTime(table, "update_at")
 	c.UpdateBy = field.NewInt64(table, "update_by")
 
@@ -124,19 +112,15 @@ func (c *courseLesson) GetFieldByName(fieldName string) (field.OrderExpr, bool) 
 }
 
 func (c *courseLesson) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 14)
+	c.fieldMap = make(map[string]field.Expr, 10)
 	c.fieldMap["id"] = c.ID
-	c.fieldMap["goods_id"] = c.GoodsID
+	c.fieldMap["course_goods_id"] = c.CourseGoodsID
 	c.fieldMap["catalog_id"] = c.CatalogID
 	c.fieldMap["name"] = c.Name
+	c.fieldMap["lesson_id"] = c.LessonID
 	c.fieldMap["enable_trial"] = c.EnableTrial
-	c.fieldMap["status"] = c.Status
-	c.fieldMap["video_key"] = c.VideoKey
-	c.fieldMap["detail"] = c.Detail
-	c.fieldMap["homework"] = c.Homework
 	c.fieldMap["sort"] = c.Sort
 	c.fieldMap["show_time"] = c.ShowTime
-	c.fieldMap["attachments"] = c.Attachments
 	c.fieldMap["update_at"] = c.UpdateAt
 	c.fieldMap["update_by"] = c.UpdateBy
 }
