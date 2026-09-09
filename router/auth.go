@@ -2,13 +2,14 @@ package router
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"mall/common"
 	"mall/consts"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-type TokenFun func(ctx context.Context, token string) (*common.User, error)
+type TokenFun func(ctx context.Context, token string) (*common.UserInfo, error)
 type TokenAdminFun func(ctx context.Context, token string) (*common.AdminUser, error)
 
 // 用户侧鉴权中间件

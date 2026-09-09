@@ -80,13 +80,6 @@ func (r *Router) route(root *gin.RouterGroup) {
 	r.adminRoute(root)
 }
 
-func (r *Router) customerRoute(root *gin.RouterGroup) {
-	cstRoot := root.Group("/customer", AuthMiddleware(r.SpanFilter, func(ctx context.Context, token string) (*common.User, error) {
-		return &common.User{}, nil
-	}))
-	cstRoot.Any("/user/info", r.admin.GetUserInfo)
-}
-
 func (r *Router) adminRoute(root *gin.RouterGroup) {
 	adminRoot := root.Group("/admin", AdminAuthMiddleware(r.SpanFilter, func(ctx context.Context, token string) (*common.AdminUser, error) {
 		return &common.AdminUser{
@@ -127,4 +120,69 @@ func (r *Router) adminRoute(root *gin.RouterGroup) {
 	adminRoot.GET("/v1/role/my_roles", r.admin.MyRoles)        // 获取自己的角色
 	adminRoot.POST("/v1/role/perm/sets", r.admin.SetRolePerms) // 设置角色权限
 
+	// 录播课时分类管理
+	adminRoot.POST("/v1/lesson/category/create", r.admin.CategoryCreate)
+	adminRoot.POST("/v1/lesson/category/update", r.admin.CategoryUpdate)
+	adminRoot.POST("/v1/lesson/category/delete", r.admin.CategoryDelete)
+	adminRoot.GET("/v1/lesson/category/list", r.admin.CategoryList)
+	adminRoot.POST("/v1/lesson/category/update_sort", r.admin.CategorySort)
+
+	// 对象存储密钥
+	adminRoot.POST("/v1/storage/get_temp_secret", r.admin.GetTempSecret)
+
+	// 录播课时管理
+	adminRoot.POST("/v1/lesson/create", r.admin.CreateLesson)
+	adminRoot.POST("/v1/lesson/update", r.admin.UpdateLesson)
+	adminRoot.POST("/v1/lesson/move", r.admin.MoveLesson)
+	adminRoot.POST("/v1/lesson/update_status", r.admin.UpdateLessonStatus)
+	adminRoot.POST("/v1/lesson/list", r.admin.LessonList)
+	adminRoot.GET("/v1/lesson/info", r.admin.LessonInfo)
+
+	// 课程管理
+	adminRoot.POST("/v1/course/create", r.admin.CreateCourse)
+	adminRoot.GET("/v1/course/info", r.admin.GetCourseInfo)
+	adminRoot.POST("/v1/course/update", r.admin.UpdateCourse)
+	adminRoot.POST("/v1/course/update_status", r.admin.UpdateCourseStatus)
+	adminRoot.GET("/v1/course/list", r.admin.ListCourse)
+
+	// 课程目录
+	adminRoot.POST("/v1/course/catalog/add", r.admin.AddCatalog)
+	adminRoot.POST("/v1/course/catalog/update", r.admin.UpdateCatalog)
+	adminRoot.POST("/v1/course/catalog/delete", r.admin.DeleteCatalog)
+	adminRoot.POST("/v1/course/catalog/update_sort", r.admin.UpdateCatalogSort)
+	adminRoot.GET("/v1/course/catalog/info", r.admin.CatalogInfo)
+
+	// 课程下的课时管理
+	adminRoot.POST("/v1/course/catalog/add_lesson", r.admin.AddCatalogLesson)
+	adminRoot.POST("/v1/course/catalog/remove_lesson", r.admin.RemoveCatalogLesson)
+	adminRoot.POST("/v1/course/catalog/update_lesson", r.admin.UpdateCatalogLesson)
+
+}
+
+func (r *Router) customerRoute(root *gin.RouterGroup) {
+	cstRoot := root.Group("/customer", AuthMiddleware(r.SpanFilter, func(ctx context.Context, token string) (*common.UserInfo, error) {
+		return r.customer.GetUserByToken(ctx, token)
+	}))
+	// 开白接口
+	cstRoot.GET("/v1/user/verify/captcha", r.customer.GetSmsCodeCaptcha)
+	cstRoot.POST("/v1/user/verify/captcha/check", r.customer.CheckSmsCodeCaptcha)
+	cstRoot.POST("/v1/user/verify/smscode", r.customer.GetSmsVerifyCode)
+	//cstRoot.POST("/v1/user/applet/login", r.customer.AppletLogin) // 小程序登录
+	cstRoot.POST("/v1/user/mobile/password_login", r.customer.MobilePasswordLogin)
+	cstRoot.POST("/v1/user/mobile/verify_login", r.customer.MobileVerifyLogin)     // 登录即注册
+	cstRoot.POST("/v1/user/mobile/reset_password", r.customer.MobilePasswordReset) // 手机号重置密码
+
+	// 以下是需要鉴权的接口
+	cstRoot.GET("/v1/user/info", r.customer.GetUserInfo)
+	cstRoot.GET("/v1/course/list", r.customer.GetCourseList)                    // 课程列表
+	cstRoot.GET("/v1/course/detail", r.customer.GetCourseDetail)                // 课程信息
+	cstRoot.GET("/v1/course/lesson/info", r.customer.GetCourseLessonInfo)       // 课时信息
+	cstRoot.GET("/v1/course/purchased/list", r.customer.GetPurchasedCourseList) // 已购买的课程列表
+
+	// 订单相关
+	//cstRoot.POST("/v1/order/calc_fee", r.customer.OrderCalcFee) // 通过提交的课程商品ID，计算订单价格
+	//cstRoot.POST("/v1/order/pay_now", r.customer.OrderPayNow)     // 基于计算的价格进行订单创建
+	//cstRoot.POST("/v1/order/pay_later", r.customer.OrderPayLater) // 从订单列表发起支付
+	//cstRoot.POST("/v1/order/cancel", r.customer.CancelOrder)      // 取消订单，未支付前都可以取消
+	//cstRoot.GET("/v1/order/list", r.customer.GetOrderList)        // 我的订单列表
 }

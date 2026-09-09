@@ -2,9 +2,6 @@ package goods
 
 import (
 	"context"
-	"github.com/gogf/gf/util/gconv"
-	"github.com/samber/lo"
-	"gorm.io/gorm"
 	"mall/adaptor"
 	"mall/adaptor/repo/model"
 	"mall/adaptor/repo/query"
@@ -12,6 +9,10 @@ import (
 	"mall/service/do"
 	"mall/utils/tools"
 	"time"
+
+	"github.com/gogf/gf/util/gconv"
+	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type ILesson interface {
@@ -23,6 +24,7 @@ type ILesson interface {
 	GetChildCategoryIds(ctx context.Context, parentIDs []int64) ([]int64, error)
 	GetCategoryNameMap(ctx context.Context, ids []int64) (map[int64]string, error)
 	GetCategoryById(ctx context.Context, id int64) (*model.LessonCategory, error)
+	FindByParentIDs(ctx context.Context, parentIDs []int64) ([]*model.LessonCategory, error)
 
 	MoveLesson(ctx context.Context, req *do.MoveLesson) error
 	GetLessonById(ctx context.Context, id int64) (*model.Lesson, error)
@@ -135,6 +137,11 @@ func (l *Lesson) UpdateCategorySort(ctx context.Context, sortList []*do.UpdateSo
 		}
 		return nil
 	})
+}
+
+func (l *Lesson) FindByParentIDs(ctx context.Context, parentIDs []int64) ([]*model.LessonCategory, error) {
+	qs := query.Use(l.db).LessonCategory
+	return qs.WithContext(ctx).Where(qs.ParentID.In(parentIDs...)).Find()
 }
 
 func (l *Lesson) MoveLesson(ctx context.Context, req *do.MoveLesson) error {

@@ -4,7 +4,9 @@ import (
 	"mall/adaptor"
 	"mall/adaptor/repo/admin"
 	"mall/adaptor/repo/goods"
+	"mall/adaptor/repo/upload"
 	"mall/adaptor/repo/user"
+	"mall/adaptor/rpc"
 	"mall/config"
 )
 
@@ -14,6 +16,8 @@ type Service struct {
 	adminUser  admin.IAdminUser
 	course     goods.ICourse
 	userCourse user.IUserCourse
+	storage    rpc.IStorage
+	upload     upload.IUploadFile
 }
 
 func NewService(adaptor adaptor.IAdaptor) *Service {
@@ -23,5 +27,7 @@ func NewService(adaptor adaptor.IAdaptor) *Service {
 		adminUser:  admin.NewAdminUser(adaptor),
 		course:     goods.NewCourse(adaptor),
 		userCourse: user.NewUserCourse(adaptor),
+		storage:    rpc.NewStorage(adaptor),
+		upload:     upload.NewUploadFile(adaptor),
 	}
 }

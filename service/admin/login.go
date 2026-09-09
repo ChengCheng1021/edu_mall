@@ -44,7 +44,7 @@ func (s *Service) GetSmsVerifyCode(ctx context.Context, req *dto.GetSmsVerifyCod
 		AppCode: consts.LarkAppCode,
 		OpenID:  s.conf.BizConf.LarkGroupID,
 		IDType:  rpc.LarkChatGroupType,
-		Content: fmt.Sprintf("<b>手机验证码通知</b>\\n\\n手机号：%s \\n验证码：%s", req.Mobile, verifyCode),
+		Content: fmt.Sprintf("<b>手机验证码通知</b> :手机号：%s 验证码：%s", req.Mobile, verifyCode),
 	})
 	if err != nil {
 		logger.Error("GetSmsVerifyCode SendLarkMsg error", zap.Error(err), zap.String("mobile", req.Mobile))

@@ -6,6 +6,7 @@ import (
 	"mall/service/goods"
 	"mall/service/perm"
 	"mall/service/role"
+	"mall/service/storage"
 )
 
 type Ctrl struct {
@@ -14,6 +15,7 @@ type Ctrl struct {
 	perm    *perm.Service
 	role    *role.Service
 	course  *goods.Service
+	storage *storage.Service
 }
 
 func NewCtrl(adaptor adaptor.IAdaptor) *Ctrl {
@@ -23,5 +25,6 @@ func NewCtrl(adaptor adaptor.IAdaptor) *Ctrl {
 		perm:    perm.NewService(adaptor),
 		role:    role.NewService(adaptor),
 		course:  goods.NewService(adaptor),
+		storage: storage.NewService(adaptor),
 	}
 }

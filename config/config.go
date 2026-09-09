@@ -32,6 +32,8 @@ type Config struct {
 	Redis   Redis             `yaml:"redis"`
 	BizConf BizConf           `yaml:"biz_conf"`
 	AppConf map[int32]AppConf `yaml:"app_conf"`
+	Storage Storage           `yaml:"storage"`
+	AliPay  AliPay            `yaml:"ali_pay"`
 }
 
 type Server struct {
@@ -68,6 +70,15 @@ type Bucket struct {
 	CdnDomain  string            `yaml:"cdn_domain"`
 	SignKey    string            `yaml:"sign_key"`
 	Paths      map[string]string `yaml:"paths"`
+}
+
+type AliPay struct {
+	AppID     string `yaml:"app_id"`
+	ApiKey    string `yaml:"api_key"`
+	ReturnURL string `yaml:"return_url"`
+	Sandbox   bool   `yaml:"sandbox"`    // 是否生产环境
+	NotifyURL string `yaml:"notify_url"` // 1>回调，2>定时查询（每10秒钟）
+	PublicKey string `yaml:"public_key"`
 }
 
 func (m *Mysql) GetDsn() string {
