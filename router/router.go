@@ -96,6 +96,10 @@ func (r *Router) adminRoute(root *gin.RouterGroup) {
 	adminRoot.POST("/v1/user/lark/qrcode_login", r.admin.LarkQrCodeLogin)
 	adminRoot.POST("/v1/user/mobile/reset_password", r.admin.MobilePasswordReset)
 
+	// C端用户管理
+	adminRoot.GET("/v1/customer/user/list", r.admin.CustomerUserList)    // 获取C端用户列表
+	adminRoot.GET("/v1/customer/user/info", r.admin.GetCustomerUserInfo) // 获取C端用户信息
+
 	// 管理员用户
 	// 登出系统
 	adminRoot.POST("/v1/user/logout", r.admin.AdminUserLogout)
@@ -174,15 +178,24 @@ func (r *Router) customerRoute(root *gin.RouterGroup) {
 
 	// 以下是需要鉴权的接口
 	cstRoot.GET("/v1/user/info", r.customer.GetUserInfo)
-	cstRoot.GET("/v1/course/list", r.customer.GetCourseList)                    // 课程列表
-	cstRoot.GET("/v1/course/detail", r.customer.GetCourseDetail)                // 课程信息
-	cstRoot.GET("/v1/course/lesson/info", r.customer.GetCourseLessonInfo)       // 课时信息
-	cstRoot.GET("/v1/course/purchased/list", r.customer.GetPurchasedCourseList) // 已购买的课程列表
+	cstRoot.GET("/v1/course/list", r.customer.GetCourseList)                         // 课程列表
+	cstRoot.GET("/v1/course/detail", r.customer.GetCourseDetail)                     // 课程信息
+	cstRoot.GET("/v1/course/lesson/info", r.customer.GetCourseLessonInfo)            // 课时信息
+	cstRoot.GET("/v1/course/purchased/list", r.customer.GetPurchasedCourseList)      // 已购买的课程列表
+	cstRoot.GET("/v1/course/home/list", r.customer.GetHomeCourseList)                // 首页课程列表
+	cstRoot.GET("/v1/course/home/info", r.customer.GetHomeCourseInfo)                // 首页课程信息
+	cstRoot.GET("/v1/course/lesson/learn_info", r.customer.GetCourseLessonLearnInfo) // 课时学习进度
+
+	// 用户购物车
+	cstRoot.POST("/v1/cart/add_goods", r.customer.AddGoods)       // 添加商品到购物车
+	cstRoot.POST("/v1/cart/remove_goods", r.customer.RemoveGoods) // 删除购物车商品
+	cstRoot.GET("/v1/cart/list_goods", r.customer.ListGoods)      // 获取购物车商品列表
 
 	// 订单相关
-	//cstRoot.POST("/v1/order/calc_fee", r.customer.OrderCalcFee) // 通过提交的课程商品ID，计算订单价格
-	//cstRoot.POST("/v1/order/pay_now", r.customer.OrderPayNow)     // 基于计算的价格进行订单创建
+	cstRoot.POST("/v1/order/calc_fee", r.customer.OrderCalcFee) // 通过提交的课程商品ID，计算订单价格
+	cstRoot.POST("/v1/order/pay_now", r.customer.OrderPayNow)   // 基于计算的价格进行订单创建
 	//cstRoot.POST("/v1/order/pay_later", r.customer.OrderPayLater) // 从订单列表发起支付
 	//cstRoot.POST("/v1/order/cancel", r.customer.CancelOrder)      // 取消订单，未支付前都可以取消
 	//cstRoot.GET("/v1/order/list", r.customer.GetOrderList)        // 我的订单列表
+
 }

@@ -4,16 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/samber/lo"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 	"mall/adaptor/repo/model"
 	"mall/common"
 	"mall/consts"
 	"mall/service/do"
 	"mall/service/dto"
 	"mall/utils/logger"
-
-	"github.com/samber/lo"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 func (s *Service) GetAdminUserByToken(ctx context.Context, token string) (*common.AdminUser, common.Errno) {

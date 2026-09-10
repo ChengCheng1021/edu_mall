@@ -73,12 +73,15 @@ type Bucket struct {
 }
 
 type AliPay struct {
-	AppID     string `yaml:"app_id"`
-	ApiKey    string `yaml:"api_key"`
-	ReturnURL string `yaml:"return_url"`
-	Sandbox   bool   `yaml:"sandbox"`    // 是否生产环境
-	NotifyURL string `yaml:"notify_url"` // 1>回调，2>定时查询（每10秒钟）
-	PublicKey string `yaml:"public_key"`
+	AppID            string `yaml:"app_id"`
+	ApiKey           string `yaml:"api_key"`
+	ReturnURL        string `yaml:"return_url"`
+	Sandbox          bool   `yaml:"sandbox"`    // 是否生产环境
+	NotifyURL        string `yaml:"notify_url"` // 1>回调，2>定时查询（每10秒钟）
+	PublicKey        string `yaml:"public_key"`
+	AppPublicCert    string `yaml:"app_public_cert"`
+	AlipayPublicCert string `yaml:"alipay_public_cert"`
+	AlipayRootCert   string `yaml:"alipay_root_cert"`
 }
 
 func (m *Mysql) GetDsn() string {

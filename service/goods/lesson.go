@@ -12,7 +12,6 @@ import (
 	"mall/utils/pool"
 	"mall/utils/tools"
 
-	"github.com/gogf/gf/util/gconv"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -302,13 +301,16 @@ func (s *Service) LessonDetail(ctx context.Context, req *dto.LessonInfoReq) (any
 		return nil, true, common.ParamErr.WithMsg("id invalid")
 	}
 
-	str := gconv.String(resp.List[0])
-	objAes, err := tools.AESEncrypt(str, []byte(s.conf.BizConf.BizSecret))
-	if err != nil {
-		logger.Error("LessonInfo AESEncrypt error", zap.Error(err), zap.Any("req", req))
-		return nil, true, common.ServerErr.WithErr(err)
-	}
-	return objAes, true, common.OK
+	lessonDto := resp.List[0]
+
+	// 加密返回
+	//str := gconv.String(resp.List[0])
+	//objAes, err := tools.AESEncrypt(str, []byte(s.conf.BizConf.BizSecret))
+	//if err != nil {
+	//	logger.Error("LessonInfo AESEncrypt error", zap.Error(err), zap.Any("req", req))
+	//	return nil, true, common.ServerErr.WithErr(err)
+	//}
+	return lessonDto, true, common.OK
 }
 
 func (s *Service) MoveLesson(ctx context.Context, user *common.AdminUser, req *dto.MoveLessonReq) common.Errno {

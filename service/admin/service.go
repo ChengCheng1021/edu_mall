@@ -4,6 +4,7 @@ import (
 	"mall/adaptor"
 	"mall/adaptor/redis"
 	"mall/adaptor/repo/admin"
+	"mall/adaptor/repo/user"
 	"mall/adaptor/rpc"
 	"mall/config"
 	"mall/service/token"
@@ -17,6 +18,7 @@ type Service struct {
 	conf      *config.Config
 	adminUser admin.IAdminUser
 	adminRole admin.IAdminRole
+	user      user.IUser
 	verify    redis.IVerify
 	captcha   slide.Captcha
 	token     *token.Service
@@ -29,6 +31,7 @@ func NewService(adaptor adaptor.IAdaptor) *Service {
 		adminUser: admin.NewAdminUser(adaptor),
 		verify:    redis.NewVerify(adaptor),
 		captcha:   captcha.NewSlideCaptcha(),
+		user:      user.NewUser(adaptor),
 		token:     token.NewService(adaptor),
 		lark:      rpc.NewLark(adaptor),
 		adminRole: admin.NewAdminRole(adaptor),
