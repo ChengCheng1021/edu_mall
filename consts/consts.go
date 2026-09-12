@@ -115,7 +115,7 @@ const (
 )
 
 const (
-	WechatRefundSuccess    = "SUCCESS"
+	WechatRefundSuccess    = "REFUND_SUCCESS"
 	WechatRefundClosed     = "CLOSED"
 	WechatRefundProcessing = "PROCESSING"
 	WechatRefundAbnormal   = "ABNORMAL"

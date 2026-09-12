@@ -5,6 +5,7 @@ import (
 	"mall/adaptor"
 	"mall/config"
 	"mall/router"
+	"mall/timer"
 	"mall/utils/logger"
 
 	"github.com/go-redis/redis"
@@ -25,14 +26,15 @@ func main() {
 	handleErr(err)
 	logger.Debug("client connect success")
 
-	startServer(conf, dbClient, rdsClient).Run()
+	startServer(conf, dbClient, rdsClient)
 }
 
-func startServer(conf *config.Config, db *gorm.DB, redis *redis.Client) *router.App {
-	return router.NewApp(conf.Server.HttpPort,
+func startServer(conf *config.Config, db *gorm.DB, redis *redis.Client) {
+	newAdaptor := adaptor.NewAdaptor(conf, db, redis)
+	app := router.NewApp(conf.Server.HttpPort,
 		router.NewRouter(
 			conf,
-			adaptor.NewAdaptor(conf, db, redis),
+			newAdaptor,
 			func() error {
 				err := func() error {
 					pingDb, err := db.DB()
@@ -46,6 +48,13 @@ func startServer(conf *config.Config, db *gorm.DB, redis *redis.Client) *router.
 			},
 		),
 	)
+	// 定时器启动
+	timerService := timer.NewService(newAdaptor)
+	timerService.Start()
+	defer timerService.Stop()
+
+	// app启动
+	app.Run()
 }
 
 func initRedis(conf *config.Redis) (*redis.Client, error) {

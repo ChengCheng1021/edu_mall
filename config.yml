@@ -1,13 +1,13 @@
 server:
-  http_port: 8080
+  http_port: 8089
   enable_pprof: true
   log_level: debug
   env: dev
 
 mysql:
   dialect: mysql
-  user: root
-  password: yourPassword
+  user:
+  password:
   host: 127.0.0.1
   port: 3306
   database: edu.mall
@@ -18,7 +18,42 @@ mysql:
 
 redis:
   addr: 127.0.0.1:6379
-  password: yourPassword
+  password:
   db_index: 0
   max_idle: 2
   max_open: 10
+
+ali_pay:
+  app_id:
+  notify_url:
+  return_url:
+  public_key:
+  sandbox: true
+
+
+biz_conf:
+  lark_group_id:
+  mobile_secret: "41e345ce7915fec245d247fc29c77b87"
+  biz_secret: "41e345ce7915fec245d247fc29c77b87"
+
+storage:
+  secret_id:
+  secret_key:
+  app_id:
+  bucket:
+    region:
+    sign_key:
+    bucket_name:
+    cdn_domain:
+    paths:
+      course: "course/dev"
+      lesson: "lesson/dev"
+      intro: "intro/dev"
+      customer: "user/dev"
+
+app_conf:
+  2000:
+    app_type: lark
+    app_name: 飞书
+    app_id:
+    app_secret:

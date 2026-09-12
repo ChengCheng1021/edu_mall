@@ -45,7 +45,6 @@ func (o *OrderCalcFeeResp) GetDescription() string {
 		gconv.Struct(v.GoodsSnap, goodsSnap)
 		descList = append(descList, goodsSnap.Name)
 	}
-
 	return strings.Join(descList, ",")
 }
 

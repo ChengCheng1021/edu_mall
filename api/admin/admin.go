@@ -4,6 +4,7 @@ import (
 	"mall/adaptor"
 	"mall/service/admin"
 	"mall/service/goods"
+	"mall/service/order"
 	"mall/service/perm"
 	"mall/service/role"
 	"mall/service/storage"
@@ -16,6 +17,7 @@ type Ctrl struct {
 	perm         *perm.Service
 	role         *role.Service
 	course       *goods.Service
+	order        *order.Service
 	storage      *storage.Service
 	customerUser *user.Service
 }
@@ -29,5 +31,6 @@ func NewCtrl(adaptor adaptor.IAdaptor) *Ctrl {
 		course:       goods.NewService(adaptor),
 		storage:      storage.NewService(adaptor),
 		customerUser: user.NewService(adaptor),
+		order:        order.NewService(adaptor),
 	}
 }

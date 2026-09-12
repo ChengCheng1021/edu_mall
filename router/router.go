@@ -161,6 +161,15 @@ func (r *Router) adminRoute(root *gin.RouterGroup) {
 	adminRoot.POST("/v1/course/catalog/remove_lesson", r.admin.RemoveCatalogLesson)
 	adminRoot.POST("/v1/course/catalog/update_lesson", r.admin.UpdateCatalogLesson)
 
+	// 订单列表
+	adminRoot.POST("v1/order/list", r.admin.OrderList)
+	adminRoot.GET("v1/order/info", r.admin.OrderInfo)
+	adminRoot.GET("v1/order/statistic", r.admin.OrderStatistic)
+
+	// 订单退款
+	adminRoot.POST("v1/order/refund", r.admin.OrderRefund)
+	adminRoot.POST("v1/order/cancel", r.admin.OrderCancel)
+
 }
 
 func (r *Router) customerRoute(root *gin.RouterGroup) {
@@ -171,7 +180,6 @@ func (r *Router) customerRoute(root *gin.RouterGroup) {
 	cstRoot.GET("/v1/user/verify/captcha", r.customer.GetSmsCodeCaptcha)
 	cstRoot.POST("/v1/user/verify/captcha/check", r.customer.CheckSmsCodeCaptcha)
 	cstRoot.POST("/v1/user/verify/smscode", r.customer.GetSmsVerifyCode)
-	//cstRoot.POST("/v1/user/applet/login", r.customer.AppletLogin) // 小程序登录
 	cstRoot.POST("/v1/user/mobile/password_login", r.customer.MobilePasswordLogin)
 	cstRoot.POST("/v1/user/mobile/verify_login", r.customer.MobileVerifyLogin)     // 登录即注册
 	cstRoot.POST("/v1/user/mobile/reset_password", r.customer.MobilePasswordReset) // 手机号重置密码
@@ -195,7 +203,7 @@ func (r *Router) customerRoute(root *gin.RouterGroup) {
 	cstRoot.POST("/v1/order/calc_fee", r.customer.OrderCalcFee) // 通过提交的课程商品ID，计算订单价格
 	cstRoot.POST("/v1/order/pay_now", r.customer.OrderPayNow)   // 基于计算的价格进行订单创建
 	//cstRoot.POST("/v1/order/pay_later", r.customer.OrderPayLater) // 从订单列表发起支付
-	//cstRoot.POST("/v1/order/cancel", r.customer.CancelOrder)      // 取消订单，未支付前都可以取消
-	//cstRoot.GET("/v1/order/list", r.customer.GetOrderList)        // 我的订单列表
-
+	cstRoot.POST("/v1/order/cancel", r.customer.CancelOrder) // 取消订单，未支付前都可以取消
+	cstRoot.GET("/v1/order/list", r.customer.GetOrderList)   // 我的订单列表
+	cstRoot.GET("v1/order/info", r.customer.GetOrderInfo)    // 订单详情
 }

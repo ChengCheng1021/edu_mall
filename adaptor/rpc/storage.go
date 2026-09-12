@@ -35,7 +35,6 @@ type Storage struct {
 }
 
 func NewStorage(adaptor adaptor.IAdaptor) *Storage {
-
 	return &Storage{
 		conf: adaptor.GetConfig(),
 	}

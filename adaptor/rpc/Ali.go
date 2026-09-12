@@ -8,8 +8,7 @@ import (
 	"mall/adaptor/repo/query"
 	"mall/config"
 	"mall/utils/logger"
-	"os"
-	"path/filepath"
+	"net/url"
 	"sync"
 
 	"github.com/smartwalle/alipay/v3"
@@ -20,7 +19,7 @@ import (
 // 未做抽象处理 抽象将出参,入参更改
 type IPay interface {
 	// 网页扫码下单支付
-	PagePrePayOrder(ctx context.Context, req alipay.TradePagePay) (string, string, error)
+	PagePrePayOrder(ctx context.Context, req alipay.TradePagePay) (*url.URL, error)
 	// 通过商户的订单号查询订单
 	QueryOrderByOutTradeNo(ctx context.Context, req alipay.TradeQuery) (*alipay.TradeQueryRsp, error)
 	// 通过支付平台的订单号查询订单
@@ -80,48 +79,54 @@ func (a *AliPay) initAliPayClient() (*alipay.Client, error) {
 	if privateKey == "" {
 		return nil, errors.New("支付宝私钥为空")
 	}
-
 	// false = 沙箱
 	client, err := alipay.New(
 		a.conf.AliPay.AppID,
 		privateKey,
-		!a.conf.AliPay.Sandbox,
+		a.conf.AliPay.Sandbox,
 	)
 	if err != nil {
 		return nil, err
 	}
-	wd, err := os.Getwd()
+	err = client.LoadAliPayPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgfT8c5PXIUSiJnmKPOw/HIOQJgGM6P5alE5f+3e6boHudzkzwqNbanDfGaznBK8h2NVCxY3eTWOcC2LXIpQBcBgJ++kaYzXsQKWT7KG9xDPeoKmSgc8gF4KwZ47y3iaLfm0O1HLlhvpnKzuT1vI8JLG1CIoVaPDmlLxa7uxvggN8qoPZFCC3iZvcuBoSnXY//fHtn/EMzWb4eO567P81yQqr1CUQ9IVpQfMWhzBp5cF6hK52eeujvNnxDE5s+9ZqhiGOupIRuOzQ5Iby2RetQ48wRg/qXYdeZmMJqSoAffxYhB3n79GyMkNVEzgWiSfVVJF/tZsTQqAkvs6bT/IP0wIDAQAB")
 	if err != nil {
-		return nil, fmt.Errorf("获取工作目录失败: %w", err)
-	}
-	appPublicCert := filepath.Join(wd, a.conf.AliPay.AppPublicCert)
-	alipayPublicCert := filepath.Join(wd, a.conf.AliPay.AlipayPublicCert)
-	alipayRootCert := filepath.Join(wd, a.conf.AliPay.AlipayRootCert)
-
-	err = client.LoadAppCertPublicKeyFromFile(appPublicCert)
-	if err != nil {
-		return nil, fmt.Errorf("加载支付宝应用公钥证书失败: %w", err)
+		return nil, err
 	}
 
-	err = client.LoadAlipayCertPublicKeyFromFile(alipayPublicCert)
-	if err != nil {
-		return nil, fmt.Errorf("加载支付宝公钥证书失败: %w", err)
-	}
+	//wd, err := os.Getwd()
+	//if err != nil {
+	//	return nil, fmt.Errorf("获取工作目录失败: %w", err)
+	//}
+	//appPublicCert := filepath.Join(wd, a.conf.AliPay.AppPublicCert)
+	//alipayPublicCert := filepath.Join(wd, a.conf.AliPay.AlipayPublicCert)
+	//alipayRootCert := filepath.Join(wd, a.conf.AliPay.AlipayRootCert)
+	//
+	//err = client.LoadAppCertPublicKeyFromFile(appPublicCert)
+	//if err != nil {
+	//	return nil, fmt.Errorf("加载支付宝应用公钥证书失败: %w", err)
+	//}
+	//
+	//err = client.LoadAlipayCertPublicKeyFromFile(alipayPublicCert)
+	//if err != nil {
+	//	return nil, fmt.Errorf("加载支付宝公钥证书失败: %w", err)
+	//}
+	//
+	//err = client.LoadAliPayRootCertFromFile(alipayRootCert)
+	//if err != nil {
+	//	return nil, fmt.Errorf("加载支付宝根证书失败: %w", err)
+	//}
 
-	err = client.LoadAliPayRootCertFromFile(alipayRootCert)
-	if err != nil {
-		return nil, fmt.Errorf("加载支付宝根证书失败: %w", err)
-	}
 	return client, nil
 }
 
-func (a *AliPay) PagePrePayOrder(ctx context.Context, req alipay.TradePagePay) (string, string, error) {
+func (a *AliPay) PagePrePayOrder(ctx context.Context, req alipay.TradePagePay) (*url.URL, error) {
 	req.ProductCode = "FAST_INSTANT_TRADE_PAY"
 	payURL, err := a.aliPayClient.TradePagePay(req)
+
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
-	return payURL.String(), "ALI_PAGE", nil
+	return payURL, nil
 }
 
 func (a *AliPay) QueryOrderByOutTradeNo(ctx context.Context, req alipay.TradeQuery) (*alipay.TradeQueryRsp, error) {

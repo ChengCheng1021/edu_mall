@@ -26,5 +26,36 @@ func (c *Ctrl) OrderPayNow(ctx *gin.Context) {
 	}
 	resp, errno := c.order.OrderPayNow(ctx.Request.Context(), user, req)
 	api.WriteResp(ctx, resp, errno)
+}
 
+func (c *Ctrl) GetOrderInfo(ctx *gin.Context) {
+	user := api.GetUserFromCtx(ctx)
+	req := &dto.GetOrderInfoReq{}
+	if err := ctx.BindQuery(req); err != nil {
+		api.WriteResp(ctx, nil, common.ParamErr.WithErr(err))
+		return
+	}
+	resp, errno := c.order.GetOrderInfo(ctx.Request.Context(), user, req)
+	api.WriteResp(ctx, resp, errno)
+}
+func (c *Ctrl) GetOrderList(ctx *gin.Context) {
+	user := api.GetUserFromCtx(ctx)
+	req := &dto.GetOrderListReq{}
+	if err := ctx.BindQuery(req); err != nil {
+		api.WriteResp(ctx, nil, common.ParamErr.WithErr(err))
+		return
+	}
+	resp, errno := c.order.GetUserOrderList(ctx.Request.Context(), user, req)
+	api.WriteResp(ctx, resp, errno)
+}
+
+func (c *Ctrl) CancelOrder(ctx *gin.Context) {
+	user := api.GetUserFromCtx(ctx)
+	req := &dto.CancelOrderReq{}
+	if err := ctx.BindJSON(req); err != nil {
+		api.WriteResp(ctx, nil, common.ParamErr.WithErr(err))
+		return
+	}
+	errno := c.order.CancelOrder(ctx.Request.Context(), user, req)
+	api.WriteResp(ctx, nil, errno)
 }
