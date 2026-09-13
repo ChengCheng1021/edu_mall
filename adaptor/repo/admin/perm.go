@@ -2,8 +2,6 @@ package admin
 
 import (
 	"context"
-	"github.com/samber/lo"
-	"gorm.io/gorm"
 	"mall/adaptor"
 	"mall/adaptor/repo/model"
 	"mall/adaptor/repo/query"
@@ -11,6 +9,9 @@ import (
 	"mall/consts"
 	"mall/service/do"
 	"time"
+
+	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type IPerm interface {

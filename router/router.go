@@ -82,10 +82,7 @@ func (r *Router) route(root *gin.RouterGroup) {
 
 func (r *Router) adminRoute(root *gin.RouterGroup) {
 	adminRoot := root.Group("/admin", AdminAuthMiddleware(r.SpanFilter, func(ctx context.Context, token string) (*common.AdminUser, error) {
-		return &common.AdminUser{
-			UserID: 1,
-			Name:   "admin",
-		}, nil
+		return r.admin.GetAdminUserByToken(ctx, token)
 	}))
 	// 登录无鉴权：添加白名单
 	adminRoot.GET("/v1/user/verify/captcha", r.admin.GetSmsCodeCaptcha)
