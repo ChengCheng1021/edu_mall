@@ -67,4 +67,5 @@ var (
 	WechatScanExpiredErr    = Errno{Code: 12014, Msg: "二维码已过期，请刷新后重试"}
 	WechatUnbindBlockedErr  = Errno{Code: 12015, Msg: "当前账号至少保留一种登录方式"}
 	MobileBindRequiredErr   = Errno{Code: 12016, Msg: "当前账号未绑定手机号，无法设置密码"}
+	OrderPayError           = Errno{Code: 12017, Msg: "订单支付失败"}
 )

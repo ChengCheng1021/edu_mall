@@ -37,7 +37,7 @@ func (s *Service) Start() {
 		panic(err)
 	}
 
-	// 优先等待支付回调，订单支付结果主动轮询，每5s中我就查询一次，定时和回调谁先到，谁处理订单支付结果
+	// 优先等待支付回调，订单支付结果主动轮询，每5s中就查询一次，定时和回调谁先到，谁处理订单支付结果
 	_, err = s.schedule.Every(5).Seconds().Do(s.OrderPayResultQuery)
 	if err != nil {
 		panic(err)

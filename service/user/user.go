@@ -54,6 +54,21 @@ func (s *Service) GetUserInfo(ctx context.Context, userID int64) (*dto.UserInfoD
 	return userInfo, common.OK
 }
 
+func (s *Service) UpdateCustomerUser(ctx context.Context, req *dto.UpdateCustomerReq) common.Errno {
+
+	err := s.user.UpdateCustomerUser(ctx, &dto.UpdateCustomer{
+		ID:     req.ID,
+		Status: req.Status,
+	})
+	if err != nil {
+		logger.Error("UpdateCustomerUser UpdateCustomerUser error", zap.Any("req", req), zap.Error(err))
+		return common.DatabaseErr.WithErr(err)
+	}
+	return common.OK
+
+	return common.OK
+}
+
 func (s *Service) CustomerUserList(ctx context.Context, req *dto.ListCustomerUserReq) (*dto.ListCustomerUserResp, common.Errno) {
 	var (
 		userIds      = []int64{}

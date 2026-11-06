@@ -29,3 +29,14 @@ func (c *Ctrl) GetCustomerUserInfo(ctx *gin.Context) {
 	resp, errno := c.customerUser.GetUserInfo(ctx.Request.Context(), req.ID)
 	api.WriteResp(ctx, resp, errno)
 }
+
+func (c *Ctrl) UpdateCustomerUser(ctx *gin.Context) {
+	_ = api.GetAdminUserFromCtx(ctx)
+	req := &dto.UpdateCustomerReq{}
+	if err := ctx.BindJSON(req); err != nil {
+		api.WriteResp(ctx, nil, common.ParamErr.WithErr(err))
+		return
+	}
+	errno := c.customerUser.UpdateCustomerUser(ctx.Request.Context(), req)
+	api.WriteResp(ctx, nil, errno)
+}

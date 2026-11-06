@@ -8,6 +8,7 @@ import (
 	"mall/adaptor/repo/query"
 	"mall/consts"
 	"mall/service/do"
+	"mall/service/dto"
 	"mall/utils/tools"
 	"time"
 
@@ -38,6 +39,8 @@ type IUser interface {
 	GetWechatAppUser(ctx context.Context, appCode int32, openID string) (*model.AppUser, error)
 
 	ListUser(ctx context.Context, req *do.ListUser) ([]*model.User, int64, error)
+
+	UpdateCustomerUser(ctx context.Context, req *dto.UpdateCustomer) error
 }
 
 type User struct {
@@ -324,4 +327,17 @@ func (a *User) ListUser(ctx context.Context, req *do.ListUser) ([]*model.User, i
 func (a *User) GetWechatAppUser(ctx context.Context, appCode int32, openID string) (*model.AppUser, error) {
 	qs := query.Use(a.db).AppUser
 	return qs.WithContext(ctx).Where(qs.AppCode.Eq(appCode), qs.OpenID.Eq(openID)).First()
+}
+
+func (a *User) UpdateCustomerUser(ctx context.Context, req *dto.UpdateCustomer) error {
+	timeNow := time.Now()
+	qs := query.Use(a.db).User
+	updateMap := map[string]interface{}{
+		qs.UpdateAt.ColumnName().String(): timeNow,
+	}
+	if req.Status != 0 {
+		updateMap[qs.Status.ColumnName().String()] = req.Status
+	}
+	_, err := qs.WithContext(ctx).Where(qs.ID.Eq(req.ID)).Updates(updateMap)
+	return err
 }

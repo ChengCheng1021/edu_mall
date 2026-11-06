@@ -40,6 +40,11 @@ type UserInfoDto struct {
 	AppUsers   []AppUser   `json:"app_users"`
 }
 
+type UpdateCustomer struct {
+	ID     int64 `json:"id"`
+	Status int32 `json:"status"`
+}
+
 type UpdateUserProfileReq struct {
 	NickName string `json:"nick_name"`
 	Sex      int32  `json:"sex"`

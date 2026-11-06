@@ -26,6 +26,7 @@ func (c *Ctrl) OrderPayNow(ctx *gin.Context) {
 	}
 	resp, errno := c.order.OrderPayNow(ctx.Request.Context(), user, req)
 	api.WriteResp(ctx, resp, errno)
+	//api.WriteResp(ctx, nil, common.OrderPayError)
 }
 
 func (c *Ctrl) GetOrderInfo(ctx *gin.Context) {

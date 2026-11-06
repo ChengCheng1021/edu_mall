@@ -96,7 +96,7 @@ func (r *Router) adminRoute(root *gin.RouterGroup) {
 	// C端用户管理
 	adminRoot.GET("/v1/customer/user/list", r.admin.CustomerUserList)    // 获取C端用户列表
 	adminRoot.GET("/v1/customer/user/info", r.admin.GetCustomerUserInfo) // 获取C端用户信息
-
+	adminRoot.POST("/v1/customer/user/update_user", r.admin.UpdateCustomerUser)
 	// 管理员用户
 	// 登出系统
 	adminRoot.POST("/v1/user/logout", r.admin.AdminUserLogout)

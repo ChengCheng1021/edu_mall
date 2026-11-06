@@ -29,3 +29,8 @@ type ListCustomerUserResp struct {
 type GetCustomerUserInfoReq struct {
 	ID int64 `form:"id"`
 }
+
+type UpdateCustomerReq struct {
+	ID     int64 `json:"id"`
+	Status int32 `json:"status"`
+}

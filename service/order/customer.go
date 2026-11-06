@@ -72,58 +72,141 @@ func (s *Service) OrderCalcFee(ctx context.Context, user *common.UserInfo, req *
 }
 
 func (s *Service) OrderPayNow(ctx context.Context, user *common.UserInfo, req *dto.OrderPayNowReq) (*dto.OrderPayNowResp, common.Errno) {
+	//orderCalcFeeStr, err := s.rdsOrder.GetOrderCalcFee(ctx, req.FeeUUID)
+	//if err != nil {
+	//	if errors.Is(err, redis.Nil) {
+	//		return nil, common.OrderCalcFeeErr
+	//	}
+	//	logger.Error("OrderPayNow GetOrderCalcFee error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.DatabaseErr.WithErr(err)
+	//}
+	//orderFeeDto := &dto.OrderCalcFeeResp{}
+	//err = json.Unmarshal([]byte(orderCalcFeeStr), orderFeeDto)
+	//if err != nil {
+	//	logger.Error("OrderPayNow Unmarshal error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.ServerErr.WithErr(err)
+	//}
+	//if orderFeeDto.TotalPayFee == 0 {
+	//	return nil, common.OrderCalcFeeErr
+	//}
+	//orderItems := make([]*do.OrderItem, 0)
+	//lo.ForEach(orderFeeDto.CourseFees, func(courseFee *dto.CourseFeeDto, index int) {
+	//	orderItems = append(orderItems, &do.OrderItem{
+	//		CourseID:    courseFee.CourseID,
+	//		DiscountFee: courseFee.DiscountFee,
+	//		GoodsSnap:   courseFee.GoodsSnap,
+	//		PayFee:      courseFee.PayFee,
+	//	})
+	//})
+	//orderID, err := s.idNode.GetNextID()
+	//if err != nil {
+	//	logger.Error("OrderPayNow GetNextID error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.ServerErr.WithErr(err)
+	//}
+	//resp := &dto.OrderPayNowResp{OrderID: orderID}
+	//outTradeNo := ""
+	//aliPayParam, nativeTradeNo := s.assemblyAliPayParam(ctx, orderFeeDto)
+	//payUrl, err := s.aliPay.PagePrePayOrder(ctx, aliPayParam)
+	//
+	//if err != nil {
+	//	logger.Error("OrderPayNow NativePrePayOrder error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.ServerErr.WithErr(err)
+	//}
+	//defer func() {
+	//	if err != nil && outTradeNo != "" {
+	//		s.rdsOrder.DelOrderPayResult(ctx, orderID)
+	//		s.aliPay.CloseOrder(ctx, alipay.TradeClose{
+	//			OutTradeNo: outTradeNo,
+	//		})
+	//	}
+	//}()
+	//
+	//outTradeNo = nativeTradeNo
+	//resp.CodeURL = payUrl.String()
+	//
+	//err = s.order.CreateOrder(ctx, &do.CreateOrder{
+	//	OrderID:     gconv.Int64(orderID),
+	//	UserID:      user.User.ID,
+	//	OrderSource: consts.OrderSourceUser,
+	//	TotalFee:    orderFeeDto.TotalFee,
+	//	TotalPayFee: orderFeeDto.TotalPayFee,
+	//	UserRemark:  req.Remark,
+	//	OutTradeNo:  outTradeNo,
+	//	OrderDesc:   orderFeeDto.GetDescription(),
+	//	Items:       orderItems,
+	//})
+	//if err != nil {
+	//	logger.Error("OrderPayNow CreateOrder error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.ServerErr.WithErr(err)
+	//}
+	//if outTradeNo == "" {
+	//	return resp, common.OK
+	//}
+	//
+	//err = s.rdsOrder.SetOrderPayResult(ctx, orderID)
+	//if err != nil {
+	//	logger.Error("OrderPayNow SetOrderPayResult error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.DatabaseErr.WithErr(err)
+	//}
+	//err = s.rdsOrder.SetTimeoutOrderCancel(ctx, orderID)
+	//if err != nil {
+	//	logger.Error("OrderPayNow SetTimeoutOrderCancel error", zap.Error(err), zap.Any("req", req))
+	//	return nil, common.DatabaseErr.WithErr(err)
+	//}
+	//return resp, common.OK
+
+	// 1. 从 Redis 获取订单计价信息
 	orderCalcFeeStr, err := s.rdsOrder.GetOrderCalcFee(ctx, req.FeeUUID)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, common.OrderCalcFeeErr
 		}
-		logger.Error("OrderPayNow GetOrderCalcFee error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow GetOrderCalcFee error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.DatabaseErr.WithErr(err)
 	}
+
+	// 2. 解析订单计价信息
 	orderFeeDto := &dto.OrderCalcFeeResp{}
 	err = json.Unmarshal([]byte(orderCalcFeeStr), orderFeeDto)
 	if err != nil {
-		logger.Error("OrderPayNow Unmarshal error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow Unmarshal error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.ServerErr.WithErr(err)
 	}
+
 	if orderFeeDto.TotalPayFee == 0 {
 		return nil, common.OrderCalcFeeErr
 	}
+
+	// 3. 组装订单明细
 	orderItems := make([]*do.OrderItem, 0)
-	lo.ForEach(orderFeeDto.CourseFees, func(courseFee *dto.CourseFeeDto, index int) {
-		orderItems = append(orderItems, &do.OrderItem{
-			CourseID:    courseFee.CourseID,
-			DiscountFee: courseFee.DiscountFee,
-			GoodsSnap:   courseFee.GoodsSnap,
-			PayFee:      courseFee.PayFee,
+	lo.ForEach(orderFeeDto.CourseFees,
+		func(courseFee *dto.CourseFeeDto, index int) {
+			orderItems = append(orderItems, &do.OrderItem{
+				CourseID:    courseFee.CourseID,
+				DiscountFee: courseFee.DiscountFee,
+				GoodsSnap:   courseFee.GoodsSnap,
+				PayFee:      courseFee.PayFee,
+			})
 		})
-	})
+
+	// 4. 生成本地订单 ID
 	orderID, err := s.idNode.GetNextID()
 	if err != nil {
-		logger.Error("OrderPayNow GetNextID error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow GetNextID error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.ServerErr.WithErr(err)
 	}
-	resp := &dto.OrderPayNowResp{OrderID: orderID}
-	outTradeNo := ""
+
+	resp := &dto.OrderPayNowResp{
+		OrderID: orderID,
+	}
+
+	// 5. 组装支付宝支付参数，提前获取支付宝交易号
 	aliPayParam, nativeTradeNo := s.assemblyAliPayParam(ctx, orderFeeDto)
-	payUrl, err := s.aliPay.PagePrePayOrder(ctx, aliPayParam)
-
-	if err != nil {
-		logger.Error("OrderPayNow NativePrePayOrder error", zap.Error(err), zap.Any("req", req))
-		return nil, common.ServerErr.WithErr(err)
-	}
-	defer func() {
-		if err != nil && outTradeNo != "" {
-			s.rdsOrder.DelOrderPayResult(ctx, orderID)
-			s.aliPay.CloseOrder(ctx, alipay.TradeClose{
-				OutTradeNo: outTradeNo,
-			})
-		}
-	}()
-
-	outTradeNo = nativeTradeNo
-	resp.CodeURL = payUrl.String()
-
+	outTradeNo := nativeTradeNo
+	// 6. 优先创建 MySQL 本地订单
 	err = s.order.CreateOrder(ctx, &do.CreateOrder{
 		OrderID:     gconv.Int64(orderID),
 		UserID:      user.User.ID,
@@ -136,23 +219,36 @@ func (s *Service) OrderPayNow(ctx context.Context, user *common.UserInfo, req *d
 		Items:       orderItems,
 	})
 	if err != nil {
-		logger.Error("OrderPayNow CreateOrder error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow CreateOrder error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.ServerErr.WithErr(err)
 	}
-	if outTradeNo == "" {
-		return resp, common.OK
-	}
 
+	// 7. 本地订单创建成功后，调用支付宝预支付
+	payUrl, err := s.aliPay.PagePrePayOrder(ctx, aliPayParam)
+	if err != nil {
+		logger.Error("OrderPayNow PagePrePayOrder error",
+			zap.Error(err), zap.Any("req", req))
+		return nil, common.ServerErr.WithErr(err)
+	}
+	// 8. 保存支付链接
+	resp.CodeURL = payUrl.String()
+	// 9. 写入 Redis 支付结果
 	err = s.rdsOrder.SetOrderPayResult(ctx, orderID)
 	if err != nil {
-		logger.Error("OrderPayNow SetOrderPayResult error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow SetOrderPayResult error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.DatabaseErr.WithErr(err)
 	}
+	// 10. 写入 Redis 订单超时取消任务
 	err = s.rdsOrder.SetTimeoutOrderCancel(ctx, orderID)
 	if err != nil {
-		logger.Error("OrderPayNow SetTimeoutOrderCancel error", zap.Error(err), zap.Any("req", req))
+		logger.Error("OrderPayNow SetTimeoutOrderCancel error",
+			zap.Error(err), zap.Any("req", req))
 		return nil, common.DatabaseErr.WithErr(err)
 	}
+
+	// 11. 返回支付信息
 	return resp, common.OK
 }
 
